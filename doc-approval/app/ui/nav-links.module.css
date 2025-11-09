@@ -1,0 +1,55 @@
+/* NavLinks.css */
+
+/* Mobile-first: links stack horizontally and fill width */
+.navLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    flex-grow: 1;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    /* gray-50 */
+    text-decoration: none;
+    font-size: 0.875rem;
+    /* text-sm */
+    font-weight: 500;
+    color: #111;
+    /* default text color */
+    transition: all 0.2s;
+}
+
+.navLink:hover {
+    background-color: #e0f2fe;
+    /* sky-100 */
+    color: #2563eb;
+    /* blue-600 */
+}
+
+/* Icon size */
+.linkIcon {
+    width: 24px;
+    /* w-6 */
+    height: auto;
+}
+
+/* Hide text on mobile */
+.linkText {
+    display: none;
+}
+
+@media (min-width: 768px) {
+
+    /* Desktop: show text and adjust padding */
+    .navLink {
+        justify-content: flex-start;
+        padding: 8px 12px;
+        flex-grow: 0;
+    }
+
+    .linkText {
+        display: inline;
+    }
+}

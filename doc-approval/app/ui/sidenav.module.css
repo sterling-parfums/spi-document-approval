@@ -1,0 +1,109 @@
+/* SideNav.css */
+
+.sideNav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px 12px;
+    /* px-3 py-4 */
+    box-sizing: border-box;
+}
+
+/* Logo area */
+.logo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    height: 80px;
+    /* mobile h-20 */
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #2563eb;
+    /* blue-600 */
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .logo {
+        height: 60px;
+        /* md:h-40 */
+        padding: 16px;
+    }
+}
+
+/* Links container */
+.linksContainer {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    gap: 8px;
+    /* space-x-2 */
+}
+
+@media (min-width: 768px) {
+    .linksContainer {
+        flex-direction: column;
+        gap: 8px;
+        /* space-y-2 */
+    }
+}
+
+/* Spacer div */
+.spacer {
+    display: none;
+    flex-grow: 1;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    /* gray-50 */
+}
+
+@media (min-width: 768px) {
+    .spacer {
+        display: block;
+    }
+}
+
+/* Sign out button */
+.signoutBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    /* gray-50 */
+    font-size: 0.875rem;
+    /* text-sm */
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.signoutBtn:hover {
+    background-color: #e0f2fe;
+    /* sky-100 */
+    color: #2563eb;
+    /* blue-600 */
+}
+
+.signoutText {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .signoutBtn {
+        justify-content: flex-start;
+        padding: 8px 12px;
+        width: auto;
+    }
+
+    .signoutText {
+        display: block;
+    }
+}
