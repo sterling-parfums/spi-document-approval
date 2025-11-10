@@ -1,14 +1,9 @@
-import Link from 'next/link';
-import NavLinks from '@/app/ui/nav-links';
-import styles from '@/app/ui/sidenav.module.css';
+import NavLinks from '@/app/components/nav-links';
+import styles from '@/app/components/sidenav.module.css';
 
 export default function SideNav() {
   return (
     <div className={styles.sideNav}>
-      <Link className={styles.logo} href="/">
-        {"Document Approval"}
-      </Link>
-
       <div className={styles.linksContainer}>
         <NavLinks />
         <div className={styles.spacer}></div>

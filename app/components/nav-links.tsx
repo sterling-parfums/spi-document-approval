@@ -1,14 +1,13 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  PaperAirplaneIcon,
 } from '@heroicons/react/24/outline';
-import styles from '@/app/ui/nav-links.module.css';
+import styles from '@/app/components/nav-links.module.css';
 
-// Map of links
 const links = [
-  // { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Requests', href: '/dashboard/requests', icon: DocumentDuplicateIcon },
+  { name: 'Home', href: '/dashboard', icon: HomeIcon },
+  { name: 'Requests', href: '/dashboard/requests', icon: PaperAirplaneIcon },
   { name: 'Approvals', href: '/dashboard/approvals', icon: UserGroupIcon },
 ];
 
