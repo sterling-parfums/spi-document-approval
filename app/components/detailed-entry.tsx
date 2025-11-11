@@ -55,7 +55,9 @@ export default function DetailedView({ data, onClickBack }: DetailedViewProps) {
         <ArrowBackIcon />
       </IconButton>
       <Typography variant="h2">{data.documentName}</Typography>
-      <Typography variant="body1">{data.amount}</Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        {data.amount.toLocaleString()}
+      </Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={tabVal}

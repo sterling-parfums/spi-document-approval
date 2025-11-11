@@ -7,8 +7,8 @@ import {
 } from '@mui/icons-material';
 import { Box, Drawer, useMediaQuery, useTheme } from '@mui/material';
 import { useState } from 'react';
-import BottomNav from '../components/bottomnav';
-import SideNav from '../components/sidenav';
+import BottomNav from '../components/bottom-nav';
+import SideNav from '../components/side-nav';
 
 const drawerWidth = 240;
 
@@ -60,7 +60,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           flexGrow: 1,
           p: 3,
           width: { md: `calc(100% - ${drawerWidth}px)` },
-          mt: 5,
         }}
       >
         {children}
