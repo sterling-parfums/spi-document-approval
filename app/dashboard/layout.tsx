@@ -3,17 +3,19 @@
 import {
   Description as DescriptionIcon,
   Home as HomeIcon,
-  Menu as MenuIcon,
   Send as SendIcon,
 } from '@mui/icons-material';
-import { AppBar, Box, Drawer, IconButton, Toolbar } from '@mui/material';
+import { Box, Drawer, useMediaQuery, useTheme } from '@mui/material';
 import { useState } from 'react';
+import BottomNav from '../components/bottomnav';
 import SideNav from '../components/sidenav';
 
 const drawerWidth = 240;
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -35,45 +37,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-          backgroundColor: 'transparent',
-          boxShadow: 'none',
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            aria-label="open drawer"
-            edge="start"
-            onClick={toggleDrawer}
-            sx={{ mr: 2, display: { md: 'none' }, color: '#000' }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
       <Box
         component="nav"
         sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         aria-label="sidebar navigation"
       >
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={toggleDrawer}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { width: drawerWidth },
-          }}
-        >
-          {drawer}
-        </Drawer>
-
         <Drawer
           variant="permanent"
           sx={{
@@ -97,6 +65,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         {children}
       </Box>
+      {isMobile && <BottomNav />}
     </Box>
   );
 }
