@@ -52,8 +52,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 href={item.ref}
                 style={{
                   textDecoration: 'none',
-                  color: 'GrayText',
+                  color: '#000',
                   width: '100%',
+                  borderRadius: '20%',
                 }}
               >
                 <ListItemButton
@@ -78,15 +79,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
         }}
       >
         <Toolbar>
           <IconButton
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={toggleDrawer}
-            sx={{ mr: 2, display: { md: 'none' } }}
+            sx={{ mr: 2, display: { md: 'none' }, color: '#000' }}
           >
             <MenuIcon />
           </IconButton>
