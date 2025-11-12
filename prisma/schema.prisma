@@ -16,50 +16,58 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  name           String
+  email          String @unique
+  hashedPassword String
+
   approvals Approval[]
   requests  Request[]
 }
 
 model Approval {
-  id         Int       @id @default(autoincrement())
-  approver   User      @relation(fields: [approverId], references: [id])
-  approverId Int
-  request    Request   @relation("RequestApprovals", fields: [requestId], references: [id])
-  requestId  Int
-  decision   DECISION_STATUS @default(PENDING)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         Int             @id @default(autoincrement())
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
   deletedAt  DateTime?
+  decision   DECISION_STATUS @default(PENDING)
+  requestId  Int
+  approverId Int
+
+  request  Request @relation("RequestApprovals", fields: [requestId], references: [id])
+  approver User    @relation(fields: [approverId], references: [id])
 }
 
 model Request {
-  id          Int        @id @default(autoincrement())
-  requester   User       @relation(fields: [requesterId], references: [id])
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
   requesterId Int
-  supplier    String
-  amount      Decimal    @db.Decimal(10, 2)
+  payee       String
+  amount      Decimal  @db.Decimal(10, 2)
   date        DateTime
   files       File[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  deletedAt   DateTime?
-  approvals   Approval[] @relation("RequestApprovals")
+
+  approvals Approval[] @relation("RequestApprovals")
+  requester User       @relation(fields: [requesterId], references: [id])
 }
 
 model File {
-  id         Int        @id @default(autoincrement())
-  url        String
-  name       String
-  request    Request    @relation(fields: [requestId], references: [id])
-  requestId  Int
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt  DateTime?
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  url       String
+  name      String
+  requestId Int
+
+  request Request @relation(fields: [requestId], references: [id])
 }
 
 enum DECISION_STATUS {
