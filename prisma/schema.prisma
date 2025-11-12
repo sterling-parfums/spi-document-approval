@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,25 +15,25 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   deletedAt DateTime?
   approvals Approval[]
   requests  Request[]
 }
 
 model Approval {
-  id         Int       @id @default(autoincrement())
-  approver   User      @relation(fields: [approverId], references: [id])
+  id         Int             @id @default(autoincrement())
+  approver   User            @relation(fields: [approverId], references: [id])
   approverId Int
-  request    Request   @relation("RequestApprovals", fields: [requestId], references: [id])
+  request    Request         @relation("RequestApprovals", fields: [requestId], references: [id])
   requestId  Int
   decision   DECISION_STATUS @default(PENDING)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
   deletedAt  DateTime?
 }
 
@@ -52,14 +52,14 @@ model Request {
 }
 
 model File {
-  id         Int        @id @default(autoincrement())
-  url        String
-  name       String
-  request    Request    @relation(fields: [requestId], references: [id])
-  requestId  Int
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt  DateTime?
+  id        Int       @id @default(autoincrement())
+  url       String
+  name      String
+  request   Request   @relation(fields: [requestId], references: [id])
+  requestId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 enum DECISION_STATUS {
