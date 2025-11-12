@@ -1,7 +1,8 @@
 'use client';
 
+import DetailedView from '@/app/components/approval-detailed/entry-approval-detailed';
 import ApprovalEntry from '@/app/components/entry-approval';
-import DetailedView from '@/app/components/entry-approval-detailed';
+import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 
@@ -34,7 +35,16 @@ export default function Page() {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        alignContent: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Typography variant="h2" sx={{ mb: 4 }}>
+        Approvals
+      </Typography>
       {approvals.map((item) => (
         <ApprovalEntry
           key={item.id}

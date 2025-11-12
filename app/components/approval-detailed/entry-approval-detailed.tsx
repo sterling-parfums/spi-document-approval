@@ -3,6 +3,8 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
+import DetailsBottomBar from './details-bottom-bar';
+import ApprovalDetailsTable from './entry-approval-details-table';
 type ApprovalEntryData = {
   id: number;
   documentName: string;
@@ -32,7 +34,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }
@@ -49,6 +51,20 @@ export default function DetailedView({ data, onClickBack }: DetailedViewProps) {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabVal(newValue);
   };
+
+  const [approvals, setApprovals] = useState({
+    id: 1,
+    documentName: 'Project Proposal',
+    requester: 'Alice',
+    approvers: ['Bob', 'Charlie'],
+    amount: 5000,
+    status: 'PENDING' as const,
+    date: '2025-11-11',
+  });
+
+  const handleApprove = (id: number) => {};
+
+  const handleReject = (id: number) => {};
   return (
     <Box>
       <IconButton onClick={onClickBack} sx={{ zIndex: 10 }}>
@@ -69,7 +85,12 @@ export default function DetailedView({ data, onClickBack }: DetailedViewProps) {
         </Tabs>
       </Box>
       <CustomTabPanel value={tabVal} index={0}>
-        Details
+        <ApprovalDetailsTable
+          data={approvals}
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />
+        <DetailsBottomBar amount={approvals.amount} />
       </CustomTabPanel>
       <CustomTabPanel value={tabVal} index={1}>
         Timeline
