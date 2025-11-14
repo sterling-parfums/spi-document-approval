@@ -57,4 +57,6 @@ export async function POST(request: Request) {
     httpOnly: true,
     expires: expiresAt,
   });
+
+  return new Response(null, { status: 204 });
 }
