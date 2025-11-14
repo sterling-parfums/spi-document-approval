@@ -7,6 +7,22 @@ export async function findSessionById(id: string): Promise<UserSession | null> {
   return prisma.userSession.findUnique({ where: { id } });
 }
 
+export async function createSession(input: {
+  userId: number;
+  expiresAt?: Date;
+  userAgent?: string;
+  ipAddress?: string;
+}): Promise<UserSession> {
+  return prisma.userSession.create({
+    data: {
+      user: { connect: { id: input.userId } },
+      expiresAt: input.expiresAt,
+      userAgent: input.userAgent,
+      ipAddress: input.ipAddress,
+    },
+  });
+}
+
 export async function deactivateSessionById(
   id: string
 ): Promise<UserSession | null> {

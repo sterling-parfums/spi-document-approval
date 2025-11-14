@@ -6,6 +6,12 @@ export async function findUserById(id: number): Promise<User | null> {
   return prisma.user.findUnique({ where: { id } });
 }
 
+export async function findUserByEmail(email: string): Promise<User | null> {
+  return prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+  });
+}
+
 export async function findUserBySessionId(id: string): Promise<User | null> {
   if (!id) return null;
 
@@ -42,7 +48,7 @@ export async function createUser(input: {
 
   return prisma.user.create({
     data: {
-      email: input.email,
+      email: input.email.toLowerCase(),
       name: input.name,
       hashedPassword,
     },
