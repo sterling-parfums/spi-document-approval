@@ -6,24 +6,46 @@ import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 
-type ApprovalEntryData = {
+export type ApprovalEntryData = {
   id: number;
   documentName: string;
-  date: string;
+  requester: string;
+  approvers: string[];
   amount: number;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  date: string;
 };
 
 export default function Page() {
   const [selected, setSelected] = useState<ApprovalEntryData | null>(null);
 
   const approvals = [
-    { id: 1, documentName: 'Invoice 1', date: '10-11-2025', amount: 10000 },
-    { id: 2, documentName: 'Invoice 2', date: '09-11-2025', amount: 15000 },
+    {
+      id: 1,
+      documentName: 'Invoice 1',
+      date: '10-11-2025',
+      amount: 10000,
+      requester: 'Bob',
+      approvers: ['Alice', 'George'],
+      status: 'PENDING' as const,
+    },
+    {
+      id: 2,
+      documentName: 'Invoice 2',
+      date: '09-11-2025',
+      amount: 15000,
+      requester: 'Bob',
+      approvers: ['Alice', 'George'],
+      status: 'PENDING' as const,
+    },
     {
       id: 3,
       documentName: 'Invoice 3',
       date: '07-11-2025',
       amount: 104500,
+      requester: 'Bob',
+      approvers: ['Alice', 'George'],
+      status: 'PENDING' as const,
     },
   ];
 
