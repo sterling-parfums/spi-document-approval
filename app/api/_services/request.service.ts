@@ -108,7 +108,12 @@ export async function findRequestsBySender(
 export async function findRequestsByReceiver(
   receiverId: string,
   opts?: Partial<{ skip: number; take: number; status: ApprovalDecision }>
-): Promise<[(RequestWithApprovalFile & RequestWithRequester)[], number]> {
+): Promise<
+  [
+    (RequestWithApprovalFile & RequestWithRequester & RequestWithApprovals)[],
+    number,
+  ]
+> {
   const where: Prisma.RequestWhereInput = {
     approvals: { some: { OR: [{ approverId: receiverId }] } },
   };
@@ -129,6 +134,7 @@ export async function findRequestsByReceiver(
     include: {
       requester: true,
       approvalFile: true,
+      approvals: true,
     },
   });
   const totalCount = await prisma.request.count({ where });
