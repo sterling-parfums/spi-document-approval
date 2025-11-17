@@ -129,44 +129,6 @@ export async function findRequestsByReceiver(
   return [requests, totalCount];
 }
 
-type RequestSummaryResponse = {
-  id: string;
-  createdAt: Date;
-  approvalFileDate: Date;
-  approvalFileId: string;
-  payee: string;
-  amount: number;
-  currency: string;
-  createdByName: string;
-  status: ApprovalDecision;
-};
-export function toRequestSummaryResponse(
-  request: RequestWithRequester & RequestWithApprovalFile & RequestWithApprovals
-): RequestSummaryResponse {
-  let status: ApprovalDecision = ApprovalDecision.PENDING;
-  for (const approval of request.approvals) {
-    if (
-      approval.decision === ApprovalDecision.REJECTED ||
-      approval.decision === ApprovalDecision.APPROVED
-    ) {
-      status = approval.decision;
-      break;
-    }
-  }
-
-  return {
-    id: request.id,
-    createdAt: request.createdAt,
-    approvalFileDate: request.approvalFileDate,
-    approvalFileId: request.approvalFile.id,
-    payee: request.payee,
-    amount: request.amount.toNumber(),
-    currency: request.currency,
-    createdByName: request.requester.name,
-    status,
-  };
-}
-
 export async function findRequestById(
   id: string
 ): Promise<
@@ -192,4 +154,27 @@ export function isRequestApprover(
   request: RequestWithApprovals
 ): boolean {
   return request.approvals.some((a) => a.approverId === user.id);
+}
+
+export async function getRequestByIdAndUser(
+  id: string,
+  user: User
+): Promise<
+  (RequestWithApprovals & RequestWithFiles & RequestWithRequester) | null
+> {
+  return prisma.request.findUnique({
+    where: {
+      id,
+      OR: [
+        { requesterId: user.id },
+        { approvals: { some: { approverId: user.id } } },
+      ],
+    },
+    include: {
+      requester: true,
+      supportingFiles: true,
+      approvalFile: true,
+      approvals: true,
+    },
+  });
 }
