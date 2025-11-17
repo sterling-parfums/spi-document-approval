@@ -1,5 +1,5 @@
-import { findLoggedInUser } from '../../_services/auth.service';
-import { uploadFile } from '../../_services/upload.service';
+import { findLoggedInUser } from '../_services/auth.service';
+import { uploadFile } from '../_services/upload.service';
 
 export async function POST(req: Request): Promise<Response> {
   const user = await findLoggedInUser();

@@ -1,39 +1,20 @@
-import { findLoggedInUser } from '@/app/api/_services/auth.service';
-import { findFileById } from '@/app/api/_services/file.service';
-import {
-  findRequestById,
-  isRequestApprover,
-  isRequestSender,
-} from '@/app/api/_services/request.service';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { findLoggedInUser } from '../../_services/auth.service';
+import { findFileById } from '../../_services/file.service';
 
 export async function GET(
-  _: Request,
-  { params }: { params: Promise<{ requestId: string; fileId: string }> }
+  _: unknown,
+  { params }: { params: Promise<{ fileId: string }> }
 ): Promise<Response> {
   const user = await findLoggedInUser();
   if (!user) {
     return new Response(null, { status: 401 });
   }
 
-  const { requestId, fileId } = await params;
-
-  const request = await findRequestById(requestId);
-
-  if (!request) {
-    return new Response(null, { status: 404 });
-  }
-
-  const isRequester = isRequestSender(user, request);
-  const isApprover = isRequestApprover(user, request);
-
-  if (!isRequester && !isApprover) {
-    return new Response(null, { status: 403 });
-  }
+  const { fileId } = await params;
 
   const file = await findFileById(fileId);
-
   if (!file) {
     return new Response(null, { status: 404 });
   }
