@@ -1,5 +1,8 @@
 import { findLoggedInUser } from '../../_services/auth.service';
-import { getRequestByIdAndUser } from '../../_services/request.service';
+import {
+  getRequestByIdAndUser,
+  toRequestResponse,
+} from '../../_services/request.service';
 
 export async function GET(
   _: Request,
@@ -16,5 +19,5 @@ export async function GET(
     return new Response(null, { status: 404 });
   }
 
-  return Response.json(request, { status: 200 });
+  return Response.json(toRequestResponse(request), { status: 200 });
 }

@@ -3,26 +3,32 @@ import {
   Prisma,
   Request,
   User,
+  File as FileEntity,
+  Approval,
 } from '@/generated/prisma/client';
 import { prisma } from '../prisma';
 
-type RequestWithRequester = Prisma.RequestGetPayload<{
-  include: { requester: true };
-}>;
+type RequestWithRequester = Request &
+  Prisma.RequestGetPayload<{
+    include: { requester: true };
+  }>;
 
-type RequestWithApprovalFile = Prisma.RequestGetPayload<{
-  include: { approvalFile: true };
-}>;
+type RequestWithApprovalFile = Request &
+  Prisma.RequestGetPayload<{
+    include: { approvalFile: true };
+  }>;
 
-type RequestWithSupportingFiles = Prisma.RequestGetPayload<{
-  include: { supportingFiles: true };
-}>;
+type RequestWithSupportingFiles = Request &
+  Prisma.RequestGetPayload<{
+    include: { supportingFiles: true };
+  }>;
 
 type RequestWithFiles = RequestWithApprovalFile & RequestWithSupportingFiles;
 
-type RequestWithApprovals = Prisma.RequestGetPayload<{
-  include: { approvals: true };
-}>;
+type RequestWithApprovals = Request &
+  Prisma.RequestGetPayload<{
+    include: { approvals: true };
+  }>;
 
 export async function createRequest(input: {
   title: string;
@@ -177,4 +183,87 @@ export async function getRequestByIdAndUser(
       approvals: true,
     },
   });
+}
+
+type RequestResponse = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+
+  payee: string;
+  amount: number;
+  currency: string;
+  approvalFileDate: Date;
+  title: string;
+  description?: string | null;
+  internalRef?: string | null;
+  externalRef?: string | null;
+
+  requester?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  approvalFile?: {
+    id: string;
+    filename: string;
+    sizeInBytes: number;
+  };
+
+  status: ApprovalDecision | null;
+};
+
+export function toRequestResponse(
+  request: Request &
+    Partial<RequestWithApprovals & RequestWithRequester & RequestWithFiles>
+): RequestResponse {
+  const toFileResponse = (file: FileEntity) => ({
+    id: file.id,
+    filename: file.filename,
+    sizeInBytes: file.sizeInBytes,
+  });
+
+  const toUserResponse = (user: User) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  });
+
+  return {
+    id: request.id,
+    createdAt: request.createdAt,
+    updatedAt: request.updatedAt,
+    payee: request.payee,
+    amount: request.amount.toNumber(),
+    currency: request.currency,
+    approvalFileDate: request.approvalFileDate,
+    title: request.title,
+    description: request.description,
+    internalRef: request.internalRef,
+    externalRef: request.externalRef,
+    requester: request.requester && toUserResponse(request.requester),
+    approvalFile: request.approvalFile && toFileResponse(request.approvalFile),
+    status: getRequestStatus(request),
+  };
+}
+
+export function getRequestStatus(
+  request: Request & Partial<RequestWithApprovals>
+): ApprovalDecision | null {
+  if (!request.approvals) return null;
+
+  const approvalsCount = request.approvals.length;
+  const approvedCount = request.approvals.filter(
+    (a) => a.decision === ApprovalDecision.APPROVED
+  ).length;
+  const rejectedCount = request.approvals.filter(
+    (a) => a.decision === ApprovalDecision.REJECTED
+  ).length;
+  const pendingCount = approvalsCount - approvedCount - rejectedCount;
+
+  if (rejectedCount > 0) return ApprovalDecision.REJECTED;
+  if (pendingCount > 0) return ApprovalDecision.PENDING;
+
+  return ApprovalDecision.APPROVED;
 }

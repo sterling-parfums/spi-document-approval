@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server';
-import { findRequestsByReceiver } from '../../_services/request.service';
+import {
+  findRequestsByReceiver,
+  toRequestResponse,
+} from '../../_services/request.service';
 import { findLoggedInUser } from '../../_services/auth.service';
 
 export async function GET(req: NextRequest) {
@@ -22,5 +25,8 @@ export async function GET(req: NextRequest) {
     status: statusIsPending ? 'PENDING' : undefined,
   });
 
-  return Response.json({ data, total }, { status: 200 });
+  return Response.json(
+    { data: data.map(toRequestResponse), total },
+    { status: 200 }
+  );
 }
