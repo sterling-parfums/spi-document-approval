@@ -1,8 +1,7 @@
-import { ApprovalDecision } from '@/generated/prisma/enums';
-import { NextRequest } from 'next/server';
 import z from 'zod';
 import { findLoggedInUser } from '../_services/auth.service';
-import { createRequest } from '../_services/request.service';
+import { prisma } from '../prisma';
+import { toRequestResponse } from '../_services/request.service';
 
 const createRequestSchema = z.object({
   title: z.string(),
@@ -18,7 +17,7 @@ const createRequestSchema = z.object({
   approvalFileDate: z.coerce.date(),
 });
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   const user = await findLoggedInUser();
   if (!user) {
     return new Response(null, { status: 401 });
@@ -33,20 +32,32 @@ export async function POST(req: NextRequest) {
   }
 
   const data = parsedBody.data;
-  const request = await createRequest({
-    title: data.title,
-    description: data.description,
-    payee: data.payee,
-    amount: data.amount,
-    currency: data.currency,
-    internalRef: data.internalRef,
-    externalRef: data.externalRef,
-    approvalFileId: data.approvalFileId,
-    supportingFileIds: data.supportingFileIds || [],
-    approvalFileDate: data.approvalFileDate,
-    approverIds: data.approverIds,
-    requesterId: user.id,
+  const request = await prisma.request.create({
+    data: {
+      title: data.title,
+      description: data.description,
+      payee: data.payee,
+      amount: data.amount,
+      currency: data.currency,
+      internalRef: data.internalRef,
+      externalRef: data.externalRef,
+      requester: { connect: { id: user.id } },
+      approvalFile: { connect: { id: data.approvalFileId } },
+      approvalFileDate: data.approvalFileDate,
+      supportingFiles: {
+        connect: data.supportingFileIds?.map((id) => ({ id })) ?? [],
+      },
+      approvals: {
+        create: data.approverIds.map((approverId) => ({
+          approver: { connect: { id: approverId } },
+        })),
+      },
+    },
+    include: {
+      approvals: true,
+      requester: true,
+    },
   });
 
-  return Response.json(request, { status: 201 });
+  return Response.json(toRequestResponse(request), { status: 201 });
 }

@@ -1,9 +1,8 @@
 import { NextRequest } from 'next/server';
-import {
-  findRequestsByReceiver,
-  toRequestResponse,
-} from '../../_services/request.service';
+import { toRequestResponse } from '../../_services/request.service';
 import { findLoggedInUser } from '../../_services/auth.service';
+import { prisma } from '../../prisma';
+import { ApprovalDecision, Prisma } from '@/generated/prisma/client';
 
 export async function GET(req: NextRequest) {
   const user = await findLoggedInUser();
@@ -19,14 +18,28 @@ export async function GET(req: NextRequest) {
   const statusIsPending = statusQuery === 'PENDING';
 
   const skip = (Number(pageQuery) - 1) * Number(pageSizeQuery);
-  const [data, total] = await findRequestsByReceiver(user.id, {
-    take: Number(pageSizeQuery),
+  const where = {
+    approvals: {
+      some: {
+        approverId: user.id,
+        decision: statusIsPending ? ApprovalDecision.PENDING : undefined,
+      },
+    },
+  } satisfies Prisma.RequestWhereInput;
+
+  const requests = await prisma.request.findMany({
     skip,
-    status: statusIsPending ? 'PENDING' : undefined,
+    take: Number(pageSizeQuery),
+    where,
+    include: {
+      approvals: true,
+      requester: true,
+    },
   });
+  const count = await prisma.request.count({ where });
 
   return Response.json(
-    { data: data.map(toRequestResponse), total },
+    { data: requests.map(toRequestResponse), count },
     { status: 200 }
   );
 }

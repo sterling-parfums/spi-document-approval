@@ -1,13 +1,11 @@
-import {
-  toUserResponse,
-  updateUser,
-  updateUserPassword,
-} from '../../_services/user.service';
+import { toUserResponse } from '../../_services/user.service';
 import {
   comparePassword,
   findLoggedInUser,
+  hashPassword,
 } from '../../_services/auth.service';
 import z from 'zod';
+import { prisma } from '../../prisma';
 
 export async function GET(): Promise<Response> {
   const user = await findLoggedInUser();
@@ -39,12 +37,24 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const { oldPassword, newPassword, ...userDetails } = parsedBody.data;
-  await updateUser(user.id, userDetails);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: userDetails,
+  });
 
   if (oldPassword && newPassword) {
-    const compare = await comparePassword(oldPassword, user.hashedPassword);
-    if (compare) await updateUserPassword(user.id, newPassword);
+    const match = await comparePassword(oldPassword, user.hashedPassword);
+
+    if (!match) {
+      return new Response(null, { status: 400 });
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { hashedPassword: await hashPassword(newPassword) },
+    });
   }
 
-  return new Response(null, { status: 200 });
+  return new Response(null, { status: 204 });
 }

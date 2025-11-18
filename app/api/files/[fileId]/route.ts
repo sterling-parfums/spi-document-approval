@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { findLoggedInUser } from '../../_services/auth.service';
-import { findFileById } from '../../_services/file.service';
+import { prisma } from '../../prisma';
 
 export async function GET(
   _: unknown,
@@ -14,7 +14,7 @@ export async function GET(
 
   const { fileId } = await params;
 
-  const file = await findFileById(fileId);
+  const file = await prisma.file.findUnique({ where: { id: fileId } });
   if (!file) {
     return new Response(null, { status: 404 });
   }

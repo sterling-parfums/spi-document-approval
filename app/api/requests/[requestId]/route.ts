@@ -1,8 +1,6 @@
 import { findLoggedInUser } from '../../_services/auth.service';
-import {
-  getRequestByIdAndUser,
-  toRequestResponse,
-} from '../../_services/request.service';
+import { toRequestResponse } from '../../_services/request.service';
+import { prisma } from '../../prisma';
 
 export async function GET(
   _: Request,
@@ -14,7 +12,16 @@ export async function GET(
   }
 
   const { requestId } = await params;
-  const request = await getRequestByIdAndUser(requestId, user);
+  const request = await prisma.request.findUnique({
+    where: { id: requestId },
+    include: {
+      approvals: { include: { approver: true } },
+      requester: true,
+      approvalFile: true,
+      supportingFiles: true,
+    },
+  });
+
   if (!request) {
     return new Response(null, { status: 404 });
   }
