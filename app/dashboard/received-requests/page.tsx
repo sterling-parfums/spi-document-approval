@@ -1,9 +1,9 @@
 'use client';
 
-import DetailedView from '@/app/_components/approval-detailed/entry-approval-detailed';
 import ApprovalEntry from '@/app/_components/entry-approval';
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export type ApprovalEntryData = {
@@ -48,13 +48,13 @@ export default function Page() {
       status: 'PENDING' as const,
     },
   ];
-
-  if (selected) {
-    // Detail View
-    return (
-      <DetailedView data={selected} onClickBack={() => setSelected(null)} />
-    );
-  }
+  const router = useRouter();
+  // if (selected) {
+  //   // Detail View
+  //   return (
+  //     <DetailedView data={selected} onClickBack={() => setSelected(null)} />
+  //   );
+  // }
 
   return (
     <Box
@@ -72,7 +72,7 @@ export default function Page() {
           key={item.id}
           data={item}
           sx={{ mb: 2 }}
-          onClick={() => setSelected(item)}
+          onClick={() => router.push(`/dashboard/received-requests/${item.id}`)}
         />
       ))}
     </Box>

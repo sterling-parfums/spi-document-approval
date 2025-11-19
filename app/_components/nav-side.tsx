@@ -41,6 +41,7 @@ export default function SideNav({ items }: SideNavProps) {
         return (
           <Box key={item.text}>
             <ListItemButton
+              selected={active}
               onClick={() => hasChildren && toggleDropdown(item.text)}
               component={!hasChildren ? Link : 'div'}
               href={hasChildren ? undefined : item.ref}
@@ -48,7 +49,6 @@ export default function SideNav({ items }: SideNavProps) {
                 textDecoration: 'none',
                 color: '#000',
                 width: '100%',
-                borderRadius: '20%',
               }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
