@@ -1,4 +1,4 @@
-import { ApprovalEntryData } from '@/app/dashboard/received-requests/page';
+import { ApprovalEntryData } from '@/app/dashboard/requests/received/page';
 import {
   Paper,
   Table,

@@ -38,16 +38,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
           text: 'Received Requests',
           icon: <DescriptionIcon />,
-          ref: '/dashboard/received-requests',
+          ref: '/dashboard/requests/received',
           children: [
             {
               text: 'All',
-              ref: '/dashboard/received-requests',
+              ref: '/dashboard/requests/received',
               icon: <DescriptionIcon />,
             },
             {
               text: 'Pending',
-              ref: '/dashboard/received-requests/pending',
+              ref: '/dashboard/requests/received/pending',
               icon: <DescriptionIcon />,
             },
           ],
@@ -56,16 +56,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {
           text: 'Sent Requests',
           icon: <SendIcon />,
-          ref: '/dashboard/sent-requests',
+          ref: '/dashboard/requests/sent',
           children: [
             {
               text: 'All',
-              ref: '/dashboard/sent-requests',
+              ref: '/dashboard/requests/sent',
               icon: <DescriptionIcon />,
             },
             {
               text: 'Pending',
-              ref: '/dashboard/sent-requests/pending',
+              ref: '/dashboard/requests/sent/pending',
               icon: <DescriptionIcon />,
             },
           ],
