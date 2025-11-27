@@ -43,14 +43,14 @@ export default function SentRequestsPage() {
       color="inherit"
       onClick={() => router.push('/dashboard/requests/sent/new')}
       sx={{
-        backgroundColor: '#1976d2', // MUI primary blue
+        backgroundColor: '#1976d2',
         color: 'white',
         width: 48,
         height: 48,
         borderRadius: '50%',
         boxShadow: 2,
         '&:hover': {
-          backgroundColor: '#115293', // darker blue
+          backgroundColor: '#115293',
         },
       }}
     >
@@ -60,7 +60,7 @@ export default function SentRequestsPage() {
   return (
     <RequestsScreen
       data={approvals}
-      baseRoute="/dashboard/sent-requests"
+      baseRoute="/dashboard/requests/sent"
       title="Sent Requests"
       headerAction={add_form_button}
     />

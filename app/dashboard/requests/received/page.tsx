@@ -46,7 +46,7 @@ export default function ReceivedRequestsPage() {
   return (
     <RequestsScreen
       data={approvals}
-      baseRoute="/dashboard/received-requests"
+      baseRoute="/dashboard/requests/received"
       title="Received Requests"
     />
   );

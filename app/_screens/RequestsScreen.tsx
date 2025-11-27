@@ -3,6 +3,7 @@
 import { Box, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import ApprovalEntry from '../_components/entry-approval';
+import SearchBar from '../_components/search-bar';
 import { ApprovalEntryData } from '../dashboard/requests/received/page';
 
 type RequestsScreenProps = {
@@ -37,6 +38,7 @@ export default function RequestsScreen({
         <Typography variant="h2">{title}</Typography>
         {headerAction}
       </Box>
+      <SearchBar onSearch={() => {}} />
       {data.map((item) => (
         <ApprovalEntry
           key={item.id}
