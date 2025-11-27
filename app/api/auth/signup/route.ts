@@ -1,7 +1,7 @@
 import z from 'zod';
+import { hashPassword } from '../../_services/auth.service';
 import { toUserResponse } from '../../_services/user.service';
 import { prisma } from '../../prisma';
-import { hashPassword } from '../../_services/auth.service';
 
 const createUserSchema = z.object({
   name: z.string().min(1),
