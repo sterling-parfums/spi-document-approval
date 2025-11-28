@@ -12,6 +12,7 @@ type NewRequestInput = {
   externalRef: string;
   payee: string;
   amount: number;
+  currency: string;
   description: string;
   approvers: string[];
   approvalDoc: FileList | null;
@@ -27,6 +28,7 @@ export default function NewRequestScreen() {
       externalRef: '',
       payee: '',
       amount: 0,
+      currency: '',
       approvers: [] as string[],
       description: '',
       approvalDoc: null,
@@ -100,6 +102,14 @@ export default function NewRequestScreen() {
               min: { value: 0.01, message: 'Amount must be greater than 0' },
             }}
             placeholder="Enter amount"
+          />
+
+          <ControlledStyledTextField<NewRequestInput>
+            name="currency"
+            control={control}
+            label="Currency*"
+            rules={{ required: 'Currency is required' }}
+            placeholder="Enter Currency"
           />
         </Box>
         <ControlledMultiSelect
