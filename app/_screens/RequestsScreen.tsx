@@ -1,10 +1,9 @@
 'use client';
 
-import { Box, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import ApprovalEntry from '../_components/entry-approval';
-import SearchBar from '../_components/search-bar';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { ApprovalEntryData } from '../dashboard/requests/received/page';
+import DesktopRequestsView from './(views)/DesktopRequestsView';
+import MobileRequestsView from './(views)/MobileRequestsView';
 
 type RequestsScreenProps = {
   title: string;
@@ -19,34 +18,26 @@ export default function RequestsScreen({
   baseRoute,
   headerAction,
 }: RequestsScreenProps) {
-  const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Box
-      sx={{
-        alignContent: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ mb: 4 }}
-      >
-        <Typography variant="h2">{title}</Typography>
-        {headerAction}
-      </Box>
-      <SearchBar onSearch={() => {}} />
-      {data.map((item) => (
-        <ApprovalEntry
-          key={item.id}
-          data={item}
-          sx={{ mb: 2 }}
-          onClick={() => router.push(`${baseRoute}/${item.id}`)}
+    <Box>
+      {isMobile ? (
+        <MobileRequestsView
+          title={title}
+          data={data}
+          baseRoute={baseRoute}
+          headerAction={headerAction}
         />
-      ))}
+      ) : (
+        <DesktopRequestsView
+          title={title}
+          data={data}
+          baseRoute={baseRoute}
+          headerAction={headerAction}
+        />
+      )}
     </Box>
   );
 }

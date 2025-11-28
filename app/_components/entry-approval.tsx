@@ -1,5 +1,6 @@
 'use client';
 
+import { colors } from '@/utils/colors';
 import {
   Check as CheckIcon,
   Clear as ClearIcon,
@@ -7,13 +8,7 @@ import {
 } from '@mui/icons-material';
 import { Card, CardContent, IconButton, Typography } from '@mui/material';
 import { Box, SxProps, Theme } from '@mui/system';
-
-type ApprovalEntryData = {
-  id: number;
-  documentName: string;
-  date: string;
-  amount: number;
-};
+import { ApprovalEntryData } from '../dashboard/requests/received/page';
 
 type ApprovalEntryProps = {
   data: ApprovalEntryData;
@@ -38,6 +33,19 @@ export default function ApprovalEntry({
           transform: 'scale(1.01)',
         },
         maxWidth: '500px',
+        background: (() => {
+          switch (data.status) {
+            case 'APPROVED':
+              return colors.approved;
+            case 'PENDING':
+              return colors.pending;
+            case 'REJECTED':
+              return colors.rejected;
+            default:
+              return colors.white;
+          }
+        })(),
+        margin: 2,
         ...sx,
       }}
       onClick={onClick}
@@ -49,20 +57,37 @@ export default function ApprovalEntry({
           alignItems="center"
           flexWrap="wrap"
         >
-          <Typography variant="h6">{data.documentName}</Typography>
+          <Typography variant="caption">
+            {`ID ${data.id} • `}
+            {data.payee}
+          </Typography>
         </Box>
-
-        <Typography variant="caption" color="text.secondary">
-          {data.date}
-        </Typography>
-
         <Box
           mt={2}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography variant="h6">{data.amount.toLocaleString()}</Typography>
+          {' '}
+          <Typography variant="h4">
+            {data.amount.toFixed(2)} {` ${data.currency}`}
+          </Typography>
+        </Box>
+        <Box
+          mt={2}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={1}
+        >
+          <Typography variant="body1" color="text.secondary">
+            {new Date(data.requestDate).toLocaleDateString('en-GB', {
+              weekday: 'short',
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })}
+          </Typography>
           <Box display="flex" gap={1}>
             <IconButton
               aria-label="preview"
