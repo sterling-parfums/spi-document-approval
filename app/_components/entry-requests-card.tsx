@@ -12,6 +12,7 @@ import { ApprovalEntryData } from '../dashboard/requests/received/page';
 
 type ApprovalEntryProps = {
   data: ApprovalEntryData;
+  viewOnly: boolean;
   onClick: () => void;
   sx?: SxProps<Theme>;
 };
@@ -19,6 +20,7 @@ export default function ApprovalEntry({
   data,
   onClick,
   sx,
+  viewOnly = true,
 }: ApprovalEntryProps) {
   return (
     <Card
@@ -96,22 +98,26 @@ export default function ApprovalEntry({
             >
               <FindInPageIcon />
             </IconButton>
-            <IconButton
-              aria-label="approve"
-              color="success"
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <CheckIcon />
-            </IconButton>
-            <IconButton
-              aria-label="reject"
-              color="error"
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <ClearIcon />
-            </IconButton>
+            {!viewOnly && (
+              <>
+                <IconButton
+                  aria-label="approve"
+                  color="success"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <CheckIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="reject"
+                  color="error"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </>
+            )}
           </Box>
         </Box>
       </CardContent>

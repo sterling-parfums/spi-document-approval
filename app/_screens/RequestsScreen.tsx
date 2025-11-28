@@ -9,14 +9,14 @@ type RequestsScreenProps = {
   title: string;
   data: ApprovalEntryData[];
   baseRoute: string;
-  headerAction?: React.ReactNode;
+  requestType: 'Sent' | 'Recieved';
 };
 
 export default function RequestsScreen({
   title,
   data,
   baseRoute,
-  headerAction,
+  requestType,
 }: RequestsScreenProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -24,18 +24,13 @@ export default function RequestsScreen({
   return (
     <Box>
       {isMobile ? (
-        <MobileRequestsView
-          title={title}
-          data={data}
-          baseRoute={baseRoute}
-          headerAction={headerAction}
-        />
+        <MobileRequestsView data={data} baseRoute={baseRoute} />
       ) : (
         <DesktopRequestsView
           title={title}
           data={data}
           baseRoute={baseRoute}
-          headerAction={headerAction}
+          requestType={requestType}
         />
       )}
     </Box>

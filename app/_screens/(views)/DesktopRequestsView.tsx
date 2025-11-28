@@ -3,8 +3,10 @@
 import SearchBar from '@/app/_components/search-bar';
 import { ApprovalEntryData } from '@/app/dashboard/requests/received/page';
 import { colors } from '@/utils/colors';
+import { Add } from '@mui/icons-material';
 import {
   Box,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -18,79 +20,15 @@ type RequestsScreenProps = {
   title: string;
   data: ApprovalEntryData[];
   baseRoute: string;
-  headerAction?: React.ReactNode;
+
+  requestType: 'Sent' | 'Recieved';
 };
-const requests = [
-  {
-    id: 1012,
-    requestDate: '18-10-2024',
-    payee: 'Acme Supplies Ltd.',
-    amount: 450.75,
-    currency: 'GBP',
-    requester: 'John Smith',
-    status: 'APPROVED',
-  },
-  {
-    id: 1013,
-    requestDate: '20-10-2024',
-    payee: 'Global Stationery Co.',
-    amount: 89.99,
-    currency: 'GBP',
-    requester: 'Sarah Johnson',
-    status: 'PENDING',
-  },
-  {
-    id: 1014,
-    requestDate: '21-10-2024',
-    payee: 'IT Hardware Express',
-    amount: 1299.5,
-    currency: 'USD',
-    requester: 'Michael Brown',
-    status: 'REJECTED',
-  },
-  {
-    id: 1015,
-    requestDate: '22-10-2024',
-    payee: 'EventHub Services',
-    amount: 750.0,
-    currency: 'EUR',
-    requester: 'Emily Davis',
-    status: 'APPROVED',
-  },
-  {
-    id: 1016,
-    requestDate: '25-10-2024',
-    payee: 'Office Cleaning Group',
-    amount: 320.0,
-    currency: 'GBP',
-    requester: 'Daniel Wilson',
-    status: 'PENDING',
-  },
-  {
-    id: 1017,
-    requestDate: '26-10-2024',
-    payee: 'Catering World',
-    amount: 567.25,
-    currency: 'GBP',
-    requester: 'Emma Thompson',
-    status: 'APPROVED',
-  },
-  {
-    id: 1018,
-    requestDate: '27-10-2024',
-    payee: 'TechFix Repairs',
-    amount: 210.0,
-    currency: 'USD',
-    requester: 'Lucas Gray',
-    status: 'REJECTED',
-  },
-];
 
 export default function DesktopRequestsView({
   title,
   data,
   baseRoute,
-  headerAction,
+  requestType,
 }: RequestsScreenProps) {
   const router = useRouter();
 
@@ -109,14 +47,34 @@ export default function DesktopRequestsView({
         sx={{ mb: 4 }}
       >
         <Typography variant="h2">{title}</Typography>
-        {headerAction}
+        {requestType === 'Sent' && (
+          <IconButton
+            aria-label="add_request"
+            color="inherit"
+            onClick={() => router.push('/dashboard/requests/sent/new')}
+            sx={{
+              backgroundColor: '#1976d2',
+              color: 'white',
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
+              boxShadow: 2,
+              '&:hover': {
+                backgroundColor: '#115293',
+              },
+            }}
+          >
+            <Add />
+          </IconButton>
+        )}
       </Box>
+
       <SearchBar onSearch={() => {}} />
 
       <Table
         sx={{
           borderCollapse: 'separate',
-          borderSpacing: '0 12px', // horizontal spacing
+          borderSpacing: '0 12px',
         }}
       >
         <TableHead>
@@ -158,7 +116,14 @@ export default function DesktopRequestsView({
                 borderRadius: 2,
                 boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
                 overflow: 'hidden',
+                cursor: 'pointer',
+                transition: '0.2s',
+                '&:hover': {
+                  boxShadow: 4,
+                  transform: 'scale(1.01)',
+                },
               }}
+              onClick={() => router.push(`${baseRoute}/${req.id}`)}
             >
               <TableCell>{req.id}</TableCell>
               <TableCell>{req.requestDate}</TableCell>

@@ -4,7 +4,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import DetailsBottomBar from './details-bottom-bar';
-import ApprovalDetailsTable from './entry-approval-details-table';
+import ApprovalDetailsTable from './entry-request-details-table';
 type ApprovalEntryData = {
   id: number;
   documentName: string;
@@ -54,12 +54,13 @@ export default function DetailedView({ data, onClickBack }: DetailedViewProps) {
 
   const [approvals, setApprovals] = useState({
     id: 1,
-    documentName: 'Project Proposal',
+    payee: 'Project Proposal',
     requester: 'Alice',
     approvers: ['Bob', 'Charlie'],
     amount: 5000,
     status: 'PENDING' as const,
-    date: '2025-11-11',
+    requestDate: '2025-11-11',
+    currency: 'AED',
   });
 
   const handleApprove = (id: number) => {};
