@@ -1,3 +1,4 @@
+import { RequestType } from '@/app/_types/request';
 import { RequestResponse } from '../_services/request.service';
 
 export type RequestsResult =
@@ -5,7 +6,7 @@ export type RequestsResult =
   | { success: false; status: number };
 
 export async function getRequests(
-  requestType: 'Sent' | 'Received',
+  requestType: RequestType,
   params?: {
     status?: string;
     page?: number;

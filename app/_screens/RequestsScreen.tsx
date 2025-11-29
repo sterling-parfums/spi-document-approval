@@ -2,6 +2,7 @@
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { RequestType } from '../_types/request';
 import { getRequests } from '../api/_client/request.client';
 import { RequestResponse } from '../api/_services/request.service';
 import DesktopRequestsView from './(views)/DesktopRequestsView';
@@ -10,7 +11,7 @@ import MobileRequestsView from './(views)/MobileRequestsView';
 type RequestsScreenProps = {
   title: string;
   baseRoute: string;
-  requestType: 'Sent' | 'Received';
+  requestType: RequestType;
 };
 
 export default function RequestsScreen({

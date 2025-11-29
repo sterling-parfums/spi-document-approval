@@ -2,6 +2,7 @@
 
 import RequestsTable from '@/app/_components/entry-requests-table';
 import SearchFilters from '@/app/_components/search-filters';
+import { RequestType } from '@/app/_types/request';
 import { RequestResponse } from '@/app/api/_services/request.service';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -12,7 +13,7 @@ type RequestsScreenProps = {
   data: RequestResponse[];
   baseRoute: string;
 
-  requestType: 'Sent' | 'Received';
+  requestType: RequestType;
 };
 
 export default function DesktopRequestsView({
