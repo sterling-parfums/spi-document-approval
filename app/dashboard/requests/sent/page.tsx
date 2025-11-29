@@ -71,7 +71,6 @@ export default function SentRequestsPage() {
 
   return (
     <RequestsScreen
-      data={requests}
       baseRoute="/dashboard/requests/sent"
       title="Sent Requests"
       requestType="Sent"

@@ -8,13 +8,13 @@ import {
   TableRow,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { ApprovalEntryData } from '../dashboard/requests/received/page';
+import { RequestResponse } from '../api/_services/request.service';
 import ApproveButton from './buttons/approve-button';
 import PreviewButton from './buttons/preview-button';
 import RejectButton from './buttons/reject-button';
 
 type RequestsTableProps = {
-  data: ApprovalEntryData[];
+  data: RequestResponse[];
   baseRoute: string;
   requestType: 'Received' | 'Sent';
 };
@@ -95,14 +95,14 @@ export default function RequestsTable({
             onClick={() => router.push(`${baseRoute}/${req.id}`)}
           >
             <TableCell>{req.id}</TableCell>
-            <TableCell>{req.requestDate}</TableCell>
+            <TableCell>{req.createdAt.toDateString()}</TableCell>
             <TableCell>{req.payee}</TableCell>
             <TableCell>{req.amount.toFixed(2)}</TableCell>
             <TableCell>{req.currency}</TableCell>
             {requestType === 'Sent' ? (
               <>
                 {' '}
-                <TableCell>{req.requester}</TableCell>
+                <TableCell>{req.requester?.name}</TableCell>
               </>
             ) : (
               <>
@@ -113,11 +113,11 @@ export default function RequestsTable({
             )}
             <TableCell>
               <Box display="flex" gap={1}>
-                <PreviewButton requestId={req.id} />
+                <PreviewButton requestId={req.idNumber} />
                 {
                   <>
-                    <ApproveButton requestId={req.id} />
-                    <RejectButton requestId={req.id} />
+                    <ApproveButton requestId={req.idNumber} />
+                    <RejectButton requestId={req.idNumber} />
                   </>
                 }
               </Box>

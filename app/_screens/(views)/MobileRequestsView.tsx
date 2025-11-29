@@ -2,7 +2,7 @@
 
 import ApprovalEntry from '@/app/_components/entry-requests-card';
 import SearchBar from '@/app/_components/search-bar';
-import { ApprovalEntryData } from '@/app/dashboard/requests/received/page';
+import { RequestResponse } from '@/app/api/_services/request.service';
 import {
   Box,
   FormControl,
@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type RequestsScreenProps = {
-  data: ApprovalEntryData[];
+  data: RequestResponse[];
   baseRoute: string;
 };
 

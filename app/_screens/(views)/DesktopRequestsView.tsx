@@ -2,14 +2,14 @@
 
 import RequestsTable from '@/app/_components/entry-requests-table';
 import SearchFilters from '@/app/_components/search-filters';
-import { ApprovalEntryData } from '@/app/dashboard/requests/received/page';
+import { RequestResponse } from '@/app/api/_services/request.service';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 type RequestsScreenProps = {
   title: string;
-  data: ApprovalEntryData[];
+  data: RequestResponse[];
   baseRoute: string;
 
   requestType: 'Sent' | 'Received';

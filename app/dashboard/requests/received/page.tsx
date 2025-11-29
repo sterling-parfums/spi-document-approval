@@ -81,7 +81,6 @@ export default function ReceivedRequestsPage() {
 
   return (
     <RequestsScreen
-      data={requests}
       baseRoute="/dashboard/requests/received"
       title="Received Requests"
       requestType="Received"

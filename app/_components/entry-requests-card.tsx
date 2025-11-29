@@ -8,10 +8,10 @@ import {
 } from '@mui/icons-material';
 import { Card, CardContent, IconButton, Typography } from '@mui/material';
 import { Box, SxProps, Theme } from '@mui/system';
-import { ApprovalEntryData } from '../dashboard/requests/received/page';
+import { RequestResponse } from '../api/_services/request.service';
 
 type ApprovalEntryProps = {
-  data: ApprovalEntryData;
+  data: RequestResponse;
   viewOnly: boolean;
   onClick: () => void;
   sx?: SxProps<Theme>;
@@ -83,7 +83,7 @@ export default function ApprovalEntry({
           gap={1}
         >
           <Typography variant="body1" color="text.secondary">
-            {new Date(data.requestDate).toLocaleDateString('en-GB', {
+            {new Date(data.createdAt).toLocaleDateString('en-GB', {
               weekday: 'short',
               day: '2-digit',
               month: 'short',
