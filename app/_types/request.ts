@@ -10,4 +10,4 @@ export type RequestFilters = {
   internalRef?: string;
 };
 
-export type RequestType = 'Sent' | 'Recieved';
+export type RequestType = 'Sent' | 'Received';
