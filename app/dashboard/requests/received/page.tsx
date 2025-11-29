@@ -84,7 +84,7 @@ export default function ReceivedRequestsPage() {
       data={requests}
       baseRoute="/dashboard/requests/received"
       title="Received Requests"
-      requestType="Recieved"
+      requestType="Received"
     />
   );
 }

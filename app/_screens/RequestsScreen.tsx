@@ -9,7 +9,7 @@ type RequestsScreenProps = {
   title: string;
   data: ApprovalEntryData[];
   baseRoute: string;
-  requestType: 'Sent' | 'Recieved';
+  requestType: 'Sent' | 'Received';
 };
 
 export default function RequestsScreen({

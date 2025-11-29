@@ -1,19 +1,10 @@
 'use client';
 
-import SearchBar from '@/app/_components/search-bar';
+import RequestsTable from '@/app/_components/entry-requests-table';
+import SearchFilters from '@/app/_components/search-filters';
 import { ApprovalEntryData } from '@/app/dashboard/requests/received/page';
-import { colors } from '@/utils/colors';
 import { Add } from '@mui/icons-material';
-import {
-  Box,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 type RequestsScreenProps = {
@@ -21,7 +12,7 @@ type RequestsScreenProps = {
   data: ApprovalEntryData[];
   baseRoute: string;
 
-  requestType: 'Sent' | 'Recieved';
+  requestType: 'Sent' | 'Received';
 };
 
 export default function DesktopRequestsView({
@@ -31,6 +22,27 @@ export default function DesktopRequestsView({
   requestType,
 }: RequestsScreenProps) {
   const router = useRouter();
+
+  const new_request_button = (
+    <IconButton
+      aria-label="add_request"
+      color="inherit"
+      onClick={() => router.push('/dashboard/requests/sent/new')}
+      sx={{
+        backgroundColor: '#1976d2',
+        color: 'white',
+        width: 48,
+        height: 48,
+        borderRadius: '50%',
+        boxShadow: 2,
+        '&:hover': {
+          backgroundColor: '#115293',
+        },
+      }}
+    >
+      <Add />
+    </IconButton>
+  );
 
   return (
     <Box
@@ -47,95 +59,15 @@ export default function DesktopRequestsView({
         sx={{ mb: 4 }}
       >
         <Typography variant="h2">{title}</Typography>
-        {requestType === 'Sent' && (
-          <IconButton
-            aria-label="add_request"
-            color="inherit"
-            onClick={() => router.push('/dashboard/requests/sent/new')}
-            sx={{
-              backgroundColor: '#1976d2',
-              color: 'white',
-              width: 48,
-              height: 48,
-              borderRadius: '50%',
-              boxShadow: 2,
-              '&:hover': {
-                backgroundColor: '#115293',
-              },
-            }}
-          >
-            <Add />
-          </IconButton>
-        )}
+        {requestType === 'Sent' && new_request_button}
       </Box>
 
-      <SearchBar onSearch={() => {}} />
-
-      <Table
-        sx={{
-          borderCollapse: 'separate',
-          borderSpacing: '0 12px',
-        }}
-      >
-        <TableHead>
-          <TableRow
-            sx={{
-              background: '#fff',
-              borderRadius: 2,
-              boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-            }}
-          >
-            <TableCell>ID</TableCell>
-            <TableCell>Request Date</TableCell>
-            <TableCell>Payee</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell>Currency</TableCell>
-            <TableCell>Requester</TableCell>
-            <TableCell>NULL</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {data.map((req) => (
-            <TableRow
-              key={req.id}
-              sx={{
-                background: (() => {
-                  switch (req.status) {
-                    case 'APPROVED':
-                      return colors.approved;
-                    case 'PENDING':
-                      return colors.pending;
-                    case 'REJECTED':
-                      return colors.rejected;
-                    default:
-                      return colors.white;
-                  }
-                })(),
-                borderRadius: 2,
-                boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                transition: '0.2s',
-                '&:hover': {
-                  boxShadow: 4,
-                  transform: 'scale(1.01)',
-                },
-              }}
-              onClick={() => router.push(`${baseRoute}/${req.id}`)}
-            >
-              <TableCell>{req.id}</TableCell>
-              <TableCell>{req.requestDate}</TableCell>
-              <TableCell>{req.payee}</TableCell>
-              <TableCell>{req.amount.toFixed(2)}</TableCell>
-              <TableCell>{req.currency}</TableCell>
-              <TableCell>{req.requester}</TableCell>
-              <TableCell> </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <SearchFilters onSearch={() => {}} />
+      <RequestsTable
+        data={data}
+        baseRoute={baseRoute}
+        requestType={requestType}
+      />
     </Box>
   );
 }
