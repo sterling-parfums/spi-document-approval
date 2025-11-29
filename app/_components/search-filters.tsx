@@ -11,49 +11,47 @@ import {
   Select,
   Stack,
 } from '@mui/material';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useState } from 'react';
+import { RequestFilters } from '../_types/request';
 import DatePickerField from './date-picker';
 type SearchFiltersProps = {
-  onSearch: (value: string) => void;
+  onSearch: (f: RequestFilters) => void;
 };
 
-export default function SearchFilters({}: SearchFiltersProps) {
-  const [filters, setFilters] = useState<{
-    id: string;
-    payee: string;
-    status: string;
-    amount: string;
-    fromDate: Dayjs | null;
-    toDate: Dayjs | null;
-    internalRef: string;
-  }>({
-    id: '',
+export default function SearchFilters({ onSearch }: SearchFiltersProps) {
+  const [filters, setFilters] = useState<RequestFilters>({
+    idNumber: undefined,
     payee: '',
     status: '',
-    amount: '',
-    fromDate: null,
-    toDate: null,
+    amountFrom: undefined,
+    fromDate: '',
+    toDate: '',
     internalRef: '',
   });
 
   const reset = () => {
     setFilters({
-      id: '',
+      idNumber: undefined,
       payee: '',
       status: '',
-      amount: '',
-      fromDate: null,
-      toDate: null,
+      amountFrom: undefined,
+      fromDate: '',
+      toDate: '',
       internalRef: '',
     });
   };
 
-  const handleChange = (key: string, value: string | Dayjs | null) => {
+  const handleChange = (
+    key: keyof RequestFilters,
+    value: string | number | null
+  ) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const onApply = () => {};
+  const onApply = () => {
+    onSearch(filters);
+  };
 
   return (
     <Box
@@ -83,8 +81,8 @@ export default function SearchFilters({}: SearchFiltersProps) {
             <InputLabel>ID</InputLabel>
             <OutlinedInput
               label="ID"
-              value={filters.id}
-              onChange={(e) => handleChange('id', e.target.value)}
+              value={filters.idNumber}
+              onChange={(e) => handleChange('idNumber', e.target.value)}
             />
           </FormControl>
         </Grid>
@@ -113,10 +111,10 @@ export default function SearchFilters({}: SearchFiltersProps) {
             <OutlinedInput
               label="Amount"
               type="number"
-              value={filters.amount}
+              value={filters.amountFrom}
               onChange={(e) =>
                 handleChange(
-                  'amount',
+                  'amountFrom',
                   Number(e.target.value).toFixed(2).toString()
                 )
               }
@@ -128,8 +126,10 @@ export default function SearchFilters({}: SearchFiltersProps) {
           <FormControl fullWidth>
             <DatePickerField
               label="From"
-              value={filters.fromDate}
-              onChange={(date) => handleChange('fromDate', date)}
+              value={filters.fromDate ? dayjs(filters.fromDate) : null}
+              onChange={(date) =>
+                handleChange('fromDate', date?.toISOString() ?? '')
+              }
             />
           </FormControl>
         </Grid>
@@ -138,8 +138,10 @@ export default function SearchFilters({}: SearchFiltersProps) {
           <FormControl fullWidth>
             <DatePickerField
               label="To"
-              value={filters.toDate}
-              onChange={(date) => handleChange('toDate', date)}
+              value={filters.toDate ? dayjs(filters.toDate) : null}
+              onChange={(date) =>
+                handleChange('toDate', date?.toISOString() ?? '')
+              }
             />
           </FormControl>
         </Grid>

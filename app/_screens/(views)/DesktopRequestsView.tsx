@@ -2,7 +2,7 @@
 
 import RequestsTable from '@/app/_components/entry-requests-table';
 import SearchFilters from '@/app/_components/search-filters';
-import { RequestType } from '@/app/_types/request';
+import { RequestFilters, RequestType } from '@/app/_types/request';
 import { RequestResponse } from '@/app/api/_services/request.service';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -12,8 +12,11 @@ type RequestsScreenProps = {
   title: string;
   data: RequestResponse[];
   baseRoute: string;
-
   requestType: RequestType;
+  filters: RequestFilters;
+  setFilters: (f: RequestFilters) => void;
+  page: number;
+  setPage: (page: number) => void;
 };
 
 export default function DesktopRequestsView({
@@ -21,6 +24,7 @@ export default function DesktopRequestsView({
   data,
   baseRoute,
   requestType,
+  setFilters,
 }: RequestsScreenProps) {
   const router = useRouter();
 
@@ -63,7 +67,7 @@ export default function DesktopRequestsView({
         {requestType === 'Sent' && new_request_button}
       </Box>
 
-      <SearchFilters onSearch={() => {}} />
+      <SearchFilters onSearch={setFilters} />
       <RequestsTable
         data={data}
         baseRoute={baseRoute}

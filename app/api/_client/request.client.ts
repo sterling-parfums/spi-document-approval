@@ -1,4 +1,4 @@
-import { RequestType } from '@/app/_types/request';
+import { RequestFilters, RequestType } from '@/app/_types/request';
 import { RequestResponse } from '../_services/request.service';
 
 export type RequestsResult =
@@ -7,8 +7,8 @@ export type RequestsResult =
 
 export async function getRequests(
   requestType: RequestType,
+  filters?: RequestFilters,
   params?: {
-    status?: string;
     page?: number;
     pageSize?: number;
   }
@@ -17,7 +17,7 @@ export async function getRequests(
 
   const requestTypePage = requestType === 'Sent' ? 'sent' : 'received';
 
-  if (params?.status) query.set('status', params.status);
+  if (filters?.status) query.set('status', filters.status);
   if (params?.page) query.set('page', String(params.page));
   if (params?.pageSize) query.set('pageSize', String(params.pageSize));
 
@@ -32,7 +32,12 @@ export async function getRequests(
   const json: { data: RequestResponse[]; count: number } = await res.json();
   return {
     success: true,
-    data: json.data,
+    data: json.data.map((r) => ({
+      ...r,
+      createdAt: new Date(r.createdAt),
+      updatedAt: new Date(r.updatedAt),
+      approvalFileDate: new Date(r.approvalFileDate),
+    })),
     count: json.count,
   };
 }

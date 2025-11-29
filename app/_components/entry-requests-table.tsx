@@ -49,7 +49,7 @@ export default function RequestsTable({
           <TableCell>Amount</TableCell>
           <TableCell>Currency</TableCell>
 
-          {requestType === 'Sent' ? (
+          {requestType === 'Received' ? (
             <>
               <TableCell>Requester</TableCell>
               <TableCell />
@@ -93,19 +93,19 @@ export default function RequestsTable({
             }}
             onClick={() => router.push(`${baseRoute}/${req.id}`)}
           >
-            <TableCell>{req.id}</TableCell>
-            <TableCell>{req.createdAt.toDateString()}</TableCell>
+            <TableCell>{req.idNumber}</TableCell>
+            <TableCell>{req.createdAt.toLocaleDateString('en-GB')}</TableCell>
             <TableCell>{req.payee}</TableCell>
             <TableCell>{req.amount.toFixed(2)}</TableCell>
             <TableCell>{req.currency}</TableCell>
-            {requestType === 'Sent' ? (
+            {requestType === 'Received' ? (
               <>
                 <TableCell>{req.requester?.name}</TableCell>
               </>
             ) : (
               <>
-                <TableCell>Internal Ref</TableCell>
-                <TableCell>External Ref</TableCell>
+                <TableCell>{req.internalRef}</TableCell>
+                <TableCell>{req.externalRef}</TableCell>
               </>
             )}
             <TableCell>
