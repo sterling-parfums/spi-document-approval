@@ -42,4 +42,28 @@ export async function getRequests(
   };
 }
 
-export async function submitRequest() {}
+export async function submitRequest(data: {
+  title: string;
+  description?: string;
+  payee: string;
+  amount: number;
+  currency: string;
+  internalRef?: string;
+  externalRef?: string;
+  approverIds: string[];
+  approvalFileId: string;
+  supportingFileIds?: string[];
+  approvalFileDate: Date;
+}) {
+  const res = await fetch('/api/requests', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    return { success: false, status: res.status };
+  } else {
+    return { success: true };
+  }
+}

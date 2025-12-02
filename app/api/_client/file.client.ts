@@ -14,7 +14,6 @@ export async function uploadFileClient(file: File) {
   formData.append('file', file);
   const res = await fetch('/api/files', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: formData,
   });
 
