@@ -1,28 +1,19 @@
-import { approveRequest } from '@/app/api/_client/approval.client';
 import { Check } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 
 type ApproveButtonProps = {
   button?: React.ReactNode;
-  requestId: string;
+  onClick: () => void;
 };
 
-export default function ApproveButton({
-  button,
-  requestId,
-}: ApproveButtonProps) {
-  const onClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    const res = await approveRequest(requestId);
-
-    if (!res.success) alert('Failed to approve request');
-  };
-
+export default function ApproveButton({ button, onClick }: ApproveButtonProps) {
   if (button) {
     return (
       <span
-        onClick={(e) => onClick(e)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         {button}
@@ -34,7 +25,10 @@ export default function ApproveButton({
     <IconButton
       aria-label="approve"
       color="success"
-      onClick={(e) => onClick(e)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
       onMouseDown={(e) => e.stopPropagation()}
     >
       <Check />

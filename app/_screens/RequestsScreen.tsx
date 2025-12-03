@@ -81,7 +81,7 @@ export default function RequestsScreen({
           data={data}
           baseRoute={baseRoute}
           filters={filters}
-          setFilters={setFilters}
+          applyFilters={setFilters}
           page={page}
           setPage={setPage}
           canApproveMap={canApproveMap}
@@ -93,7 +93,7 @@ export default function RequestsScreen({
           baseRoute={baseRoute}
           requestType={requestType}
           filters={filters}
-          setFilters={setFilters}
+          applyFilters={setFilters}
           page={page}
           setPage={setPage}
           canApproveMap={canApproveMap}

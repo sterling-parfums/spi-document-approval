@@ -1,15 +1,20 @@
 'use client';
 
+import { Search } from '@mui/icons-material';
 import {
   Box,
   Button,
   FormControl,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   OutlinedInput,
   Select,
   Stack,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -52,6 +57,53 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
   const onApply = () => {
     onSearch(filters);
   };
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  if (isMobile) {
+    return (
+      <Box>
+        <Grid container spacing={2} sx={{ maxWidth: 700 }}>
+          <Grid size={12}>
+            <FormControl sx={{ mb: 1 }} fullWidth>
+              <InputLabel id="statusLabel">Status</InputLabel>
+              <Select
+                labelId="statusLabel"
+                id="statusSelect"
+                value={filters.status}
+                label="Status"
+                onChange={(e) => handleChange('status', e.target.value)}
+              >
+                <MenuItem value={'ALL'}>All</MenuItem>
+                <MenuItem value={'PENDING'}>Pending</MenuItem>
+                <MenuItem value={'APPROVED'}>Approved</MenuItem>
+                <MenuItem value={'REJECTED'}>Rejected</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid size={12}>
+            <FormControl fullWidth>
+              <InputLabel>Payee</InputLabel>
+              <OutlinedInput
+                value={filters.payee}
+                onChange={(e) => handleChange('payee', e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={onApply} edge="end" color="primary">
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                }
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Box>
+    );
+  }
 
   return (
     <Box

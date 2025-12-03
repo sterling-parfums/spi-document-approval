@@ -18,7 +18,18 @@ export async function getRequests(
 
   const requestTypePage = requestType === 'Sent' ? 'sent' : 'received';
 
+  if (filters?.payee) query.set('payee', filters.payee);
+  if (filters?.idNumber !== undefined)
+    query.set('idNumber', String(filters.idNumber));
   if (filters?.status) query.set('status', filters.status);
+  if (filters?.amountFrom !== undefined)
+    query.set('amountFrom', String(filters.amountFrom));
+  if (filters?.amountTo !== undefined)
+    query.set('amountTo', String(filters.amountTo));
+  if (filters?.fromDate) query.set('fromDate', filters.fromDate);
+  if (filters?.toDate) query.set('toDate', filters.toDate);
+  if (filters?.internalRef) query.set('internalRef', filters.internalRef);
+
   if (params?.page) query.set('page', String(params.page));
   if (params?.pageSize) query.set('pageSize', String(params.pageSize));
 

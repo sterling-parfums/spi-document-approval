@@ -18,7 +18,7 @@ type RequestsScreenProps = {
   baseRoute: string;
   requestType: RequestType;
   filters: RequestFilters;
-  setFilters: (f: RequestFilters) => void;
+  applyFilters: (f: RequestFilters) => void;
   page: number;
   setPage: (page: number) => void;
   canApproveMap: Record<string, boolean>;
@@ -47,7 +47,7 @@ export default function DesktopRequestsView({
   data,
   baseRoute,
   requestType,
-  setFilters,
+  applyFilters,
   canApproveMap,
 }: RequestsScreenProps) {
   const router = useRouter();
@@ -91,7 +91,7 @@ export default function DesktopRequestsView({
         {requestType === 'Sent' && new_request_button}
       </Box>
 
-      <SearchFilters onSearch={setFilters} />
+      <SearchFilters onSearch={applyFilters} />
       <RequestsTable
         data={data}
         baseRoute={baseRoute}
