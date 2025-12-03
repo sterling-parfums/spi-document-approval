@@ -18,8 +18,10 @@ type RequestsScreenProps = {
 export async function canApprove(requestId: string) {
   const res = await getApprovalsForRequest(requestId);
 
-  if (!res.success)
+  if (!res.success) {
     console.log(`Unable to find approval for request ${requestId}.`);
+    return false;
+  }
 
   return res.canApprove;
 }

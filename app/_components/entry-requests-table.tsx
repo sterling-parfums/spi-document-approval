@@ -8,6 +8,10 @@ import {
   TableRow,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import {
+  handleApprove,
+  handleReject,
+} from '../_screens/(views)/DesktopRequestsView';
 import { RequestType } from '../_types/request';
 import { RequestResponse } from '../api/_services/request.service';
 import ApproveButton from './buttons/approve-button';
@@ -115,8 +119,8 @@ export default function RequestsTable({
                 <PreviewButton requestId={req.idNumber} />
                 {(canApproveMap?.[req.id] ?? false) && (
                   <>
-                    <ApproveButton requestId={req.id} />
-                    <RejectButton requestId={req.id} />
+                    <ApproveButton onClick={() => handleApprove(req.id)} />
+                    <RejectButton onClick={() => handleReject(req.id)} />
                   </>
                 )}
               </Box>

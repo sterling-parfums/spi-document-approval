@@ -1,4 +1,5 @@
 import { MeUserResponse } from '../_services/user.service';
+import { apiFetch } from './apiFetch';
 
 type UserResponse = {
   id: string;
@@ -17,7 +18,7 @@ type UserRequestResult<dataType> =
 export async function getUsers(params?: {
   omitSelf?: boolean;
 }): Promise<UserRequestResult<UserResponse[]>> {
-  const res = await fetch(`/api/users`);
+  const res = await apiFetch(`/api/users`);
 
   if (!res.ok) {
     return { success: false, status: res.status };
@@ -45,7 +46,7 @@ export async function getUsers(params?: {
 }
 
 export async function getMe(): Promise<UserRequestResult<MeUserResponse>> {
-  const res = await fetch(`/api/users/me`);
+  const res = await apiFetch(`/api/users/me`);
   if (!res.ok) {
     return { success: false, status: res.status };
   }

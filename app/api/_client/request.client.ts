@@ -1,5 +1,6 @@
 import { RequestFilters, RequestType } from '@/app/_types/request';
 import { RequestResponse } from '../_services/request.service';
+import { apiFetch } from './apiFetch';
 
 export type RequestsResult =
   | { success: true; data: RequestResponse[]; count: number }
@@ -21,7 +22,7 @@ export async function getRequests(
   if (params?.page) query.set('page', String(params.page));
   if (params?.pageSize) query.set('pageSize', String(params.pageSize));
 
-  const res = await fetch(
+  const res = await apiFetch(
     `/api/requests/${requestTypePage}?${query.toString()}`
   );
 
@@ -43,7 +44,7 @@ export async function getRequests(
 }
 
 export async function getRequestByID(requestId: string) {
-  const res = await fetch(`/api/requests/${requestId}`);
+  const res = await apiFetch(`/api/requests/${requestId}`);
   if (!res.ok) {
     return { success: false, status: res.status };
   }
@@ -66,7 +67,7 @@ export async function submitRequest(data: {
   supportingFileIds?: string[];
   approvalFileDate: Date;
 }) {
-  const res = await fetch('/api/requests', {
+  const res = await apiFetch('/api/requests', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

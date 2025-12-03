@@ -32,7 +32,6 @@ export async function GET(
     {
       data: request.approvals.map(toApprovalResponse),
       count: request.approvals.length,
-      myApproval: request.approvals.find((a) => a.approverId === user.id),
       canApprove: request.approvals.some(
         (a) =>
           a.approverId === user.id && a.decision === ApprovalDecision.PENDING

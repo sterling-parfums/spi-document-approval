@@ -3,6 +3,10 @@
 import RequestsTable from '@/app/_components/entry-requests-table';
 import SearchFilters from '@/app/_components/search-filters';
 import { RequestFilters, RequestType } from '@/app/_types/request';
+import {
+  approveRequest,
+  rejectRequest,
+} from '@/app/api/_client/approval.client';
 import { RequestResponse } from '@/app/api/_services/request.service';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -19,6 +23,24 @@ type RequestsScreenProps = {
   setPage: (page: number) => void;
   canApproveMap: Record<string, boolean>;
 };
+
+export async function handleApprove(requestId: string) {
+  const res = await approveRequest(requestId);
+  if (!res.success) {
+    alert('Failed to approve request');
+  }
+
+  return res.success;
+}
+
+export async function handleReject(requestId: string) {
+  const res = await rejectRequest(requestId);
+  if (!res.success) {
+    alert('Failed to approve request');
+  }
+
+  return res.success;
+}
 
 export default function DesktopRequestsView({
   title,

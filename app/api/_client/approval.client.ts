@@ -1,9 +1,12 @@
-type ApprovalRequestResult<dataType> =
-  | { success: true; data: dataType }
+import { ApprovalResponse } from '../_services/approval.service';
+import { apiFetch } from './apiFetch';
+
+type ApprovalResult =
+  | { success: true; data: ApprovalResponse[]; canApprove: boolean }
   | { success: false; status: number };
 
 export async function approveRequest(requestId: string) {
-  const res = await fetch(`/api/requests/${requestId}/approve`, {
+  const res = await apiFetch(`/api/requests/${requestId}/approve`, {
     method: 'POST',
   });
 
@@ -17,7 +20,7 @@ export async function approveRequest(requestId: string) {
 }
 
 export async function rejectRequest(requestId: string) {
-  const res = await fetch(`/api/requests/${requestId}/reject`, {
+  const res = await apiFetch(`/api/requests/${requestId}/reject`, {
     method: 'POST',
   });
 
@@ -30,8 +33,10 @@ export async function rejectRequest(requestId: string) {
   return { success: true, status: res.status, data: rejection };
 }
 
-export async function getApprovalsForRequest(requestId: string) {
-  const res = await fetch(`/api/requests/${requestId}/approvals`);
+export async function getApprovalsForRequest(
+  requestId: string
+): Promise<ApprovalResult> {
+  const res = await apiFetch(`/api/requests/${requestId}/approvals`);
   if (!res.ok) {
     return { success: false, status: res.status };
   }
@@ -41,7 +46,6 @@ export async function getApprovalsForRequest(requestId: string) {
   return {
     success: true,
     data: json.data,
-    myApproval: json.myApproval,
     canApprove: json.canApprove,
   };
 }

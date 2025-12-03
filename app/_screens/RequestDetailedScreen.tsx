@@ -2,12 +2,15 @@
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, IconButton, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DetailsBottomBar from '../_components/request-detailed/details-bottom-bar';
 import ApprovalDetailsTable from '../_components/request-detailed/entry-request-details-table';
+import { getApprovalsForRequest } from '../api/_client/approval.client';
+import { getRequestByID } from '../api/_client/request.client';
+import { handleApprove, handleReject } from './(views)/DesktopRequestsView';
 
 type DetailedViewProps = {
-  data: ApprovalEntryData;
+  requestId: string;
   onClickBack: () => void;
 };
 
@@ -17,17 +20,6 @@ interface TabPanelProps {
   value: number;
 }
 
-type ApprovalEntryData = {
-  id: number;
-  requestDate: string;
-  payee: string;
-  amount: number;
-  currency: string;
-  requester: string;
-  status: string;
-  approvers: string[];
-};
-
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -35,8 +27,8 @@ function CustomTabPanel(props: TabPanelProps) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       {...other}
     >
       {value === index && <Box>{children}</Box>}
@@ -45,24 +37,66 @@ function CustomTabPanel(props: TabPanelProps) {
 }
 function a11yProps(index: number) {
   return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    id: `tab-${index}`,
+    'aria-controls': `tabpanel-${index}`,
   };
 }
 
 export default function RequestDetailScreen({
-  data,
+  requestId,
   onClickBack,
 }: DetailedViewProps) {
   const [tabVal, setTabVal] = useState(0);
+  const [data, setData] = useState({
+    id: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+
+    payee: '',
+    amount: 0,
+    currency: '',
+    approvalFileDate: new Date(),
+    title: '',
+    description: null,
+    internalRef: null,
+    externalRef: null,
+
+    requester: undefined,
+    approvalFile: undefined,
+
+    status: null,
+    idNumber: 0,
+    approvers: [],
+  });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabVal(newValue);
   };
 
-  const handleApprove = (id: number) => {};
+  useEffect(() => {
+    async function fetchRequestDetails() {
+      const request = await getRequestByID(requestId);
 
-  const handleReject = (id: number) => {};
+      if (!request.success) {
+        console.error(`Unable to retrieve request ${requestId}`);
+        return;
+      }
+
+      const approvals = await getApprovalsForRequest(requestId);
+
+      if (!approvals.success) {
+        console.error(`Unable to retrieve approvers for request ${requestId}`);
+        return;
+      }
+
+      setData({
+        ...request.data,
+        approvers: approvals.data.map((a) => a.approver.name) ?? [],
+      });
+    }
+
+    fetchRequestDetails();
+  }, []);
   return (
     <Box>
       <IconButton onClick={onClickBack} sx={{ zIndex: 10 }}>
@@ -83,12 +117,12 @@ export default function RequestDetailScreen({
         </Tabs>
       </Box>
       <CustomTabPanel value={tabVal} index={0}>
-        <ApprovalDetailsTable
-          data={data}
-          onApprove={handleApprove}
-          onReject={handleReject}
+        <ApprovalDetailsTable data={data} />
+        <DetailsBottomBar
+          amount={data.amount}
+          handleApprove={() => handleApprove(data.id)}
+          handleReject={() => handleReject(data.id)}
         />
-        <DetailsBottomBar amount={data.amount} />
       </CustomTabPanel>
       <CustomTabPanel value={tabVal} index={1}>
         Timeline
