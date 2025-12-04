@@ -56,6 +56,7 @@ export async function POST(req: Request) {
     include: {
       approvals: true,
       requester: true,
+      approvalFile: true,
     },
   });
 
