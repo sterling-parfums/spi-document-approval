@@ -68,6 +68,7 @@ export async function GET(req: NextRequest) {
     include: {
       approvals: true,
       requester: true,
+      approvalFile: true,
     },
   });
 

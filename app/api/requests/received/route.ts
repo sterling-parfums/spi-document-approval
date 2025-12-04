@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
     include: {
       approvals: true,
       requester: true,
+      approvalFile: true,
     },
   });
   const count = await prisma.request.count({ where });

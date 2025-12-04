@@ -4,6 +4,7 @@ import {
   Request,
   User,
 } from '@/generated/prisma/client';
+import { toFileResponse } from './file.service';
 import { toUserResponse } from './user.service';
 
 type RequestWithRequester = Request &
@@ -14,6 +15,11 @@ type RequestWithRequester = Request &
 export type RequestWithApprovals = Request &
   Prisma.RequestGetPayload<{
     include: { approvals: true };
+  }>;
+
+export type RequestWithApprovalFile = Request &
+  Prisma.RequestGetPayload<{
+    include: { approvalFile: true };
   }>;
 
 export type RequestWithApprovalsWithApprovers = Request &
@@ -52,7 +58,10 @@ export type RequestResponse = {
 };
 
 export function toRequestResponse(
-  request: Request & RequestWithApprovals & RequestWithRequester
+  request: Request &
+    RequestWithApprovals &
+    RequestWithRequester &
+    RequestWithApprovalFile
 ): RequestResponse {
   return {
     id: request.id,
@@ -69,6 +78,7 @@ export function toRequestResponse(
     requester: toUserResponse(request.requester),
     status: getRequestStatus(request),
     idNumber: request.idNumber,
+    approvalFile: toFileResponse(request.approvalFile),
   };
 }
 

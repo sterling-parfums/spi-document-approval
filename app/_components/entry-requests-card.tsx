@@ -1,24 +1,28 @@
 'use client';
 
 import { colors } from '@/utils/colors';
-import {
-  Check as CheckIcon,
-  Clear as ClearIcon,
-  FindInPage as FindInPageIcon,
-} from '@mui/icons-material';
-import { Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import { Box, SxProps, Theme } from '@mui/system';
+import {
+  handleApprove,
+  handleReject,
+} from '../_screens/(views)/DesktopRequestsView';
 import { RequestResponse } from '../api/_services/request.service';
+import ApproveButton from './buttons/approve-button';
+import PreviewButton from './buttons/preview-button';
+import RejectButton from './buttons/reject-button';
 
 type ApprovalEntryProps = {
   data: RequestResponse;
   viewOnly: boolean;
   onClick: () => void;
+  openPreview: (id: string) => void;
   sx?: SxProps<Theme>;
 };
-export default function ApprovalEntry({
+export function RequestEntry({
   data,
   onClick,
+  openPreview,
   sx,
   viewOnly = true,
 }: ApprovalEntryProps) {
@@ -91,31 +95,13 @@ export default function ApprovalEntry({
             })}
           </Typography>
           <Box display="flex" gap={1}>
-            <IconButton
-              aria-label="preview"
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <FindInPageIcon />
-            </IconButton>
+            <PreviewButton
+              onClick={() => openPreview(data.approvalFile?.id ?? '')}
+            />
             {!viewOnly && (
               <>
-                <IconButton
-                  aria-label="approve"
-                  color="success"
-                  onClick={(e) => e.stopPropagation()}
-                  onMouseDown={(e) => e.stopPropagation()}
-                >
-                  <CheckIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="reject"
-                  color="error"
-                  onClick={(e) => e.stopPropagation()}
-                  onMouseDown={(e) => e.stopPropagation()}
-                >
-                  <ClearIcon />
-                </IconButton>
+                <ApproveButton onClick={() => handleApprove(data.id)} />
+                <RejectButton onClick={() => handleReject(data.id)} />
               </>
             )}
           </Box>

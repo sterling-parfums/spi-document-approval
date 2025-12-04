@@ -1,3 +1,4 @@
+import { usePreviewDialog } from '@/hooks/use-preview-dialog';
 import { colors } from '@/utils/colors';
 import {
   Box,
@@ -25,6 +26,18 @@ type RequestsTableProps = {
   canApproveMap: Record<string, boolean>;
 };
 
+const columnWidths = {
+  id: '8%',
+  date: '12%',
+  payee: '28%',
+  amount: '12%',
+  currency: '8%',
+  requester: '20%',
+  internalRef: '15%',
+  externalRef: '15%',
+  actions: '12%',
+};
+
 export default function RequestsTable({
   data,
   baseRoute,
@@ -32,12 +45,14 @@ export default function RequestsTable({
   canApproveMap,
 }: RequestsTableProps) {
   const router = useRouter();
+  const { openPreview, dialog } = usePreviewDialog();
 
   return (
     <Table
       sx={{
         borderCollapse: 'separate',
-        borderSpacing: '0 12px',
+        borderSpacing: '0 4px',
+        tableLayout: 'fixed',
       }}
     >
       <TableHead>
@@ -49,22 +64,28 @@ export default function RequestsTable({
             overflow: 'hidden',
           }}
         >
-          <TableCell>ID</TableCell>
-          <TableCell>Request Date</TableCell>
-          <TableCell>Payee</TableCell>
-          <TableCell>Amount</TableCell>
-          <TableCell>Currency</TableCell>
+          <TableCell sx={{ width: columnWidths.id }}>ID</TableCell>
+          <TableCell sx={{ width: columnWidths.date }}>Request Date</TableCell>
+          <TableCell sx={{ width: columnWidths.payee }}>Payee</TableCell>
+          <TableCell sx={{ width: columnWidths.amount }}>Amount</TableCell>
+          <TableCell sx={{ width: columnWidths.currency }}>Currency</TableCell>
 
           {requestType === 'Received' ? (
             <>
-              <TableCell>Requester</TableCell>
-              <TableCell />
+              <TableCell sx={{ width: columnWidths.requester }}>
+                Requester
+              </TableCell>
+              <TableCell sx={{ width: columnWidths.actions }} />
             </>
           ) : (
             <>
-              <TableCell>Internal Ref</TableCell>
-              <TableCell>External Ref</TableCell>
-              <TableCell />
+              <TableCell sx={{ width: columnWidths.internalRef }}>
+                Internal Ref
+              </TableCell>
+              <TableCell sx={{ width: columnWidths.externalRef }}>
+                External Ref
+              </TableCell>
+              <TableCell sx={{ width: columnWidths.actions }} />
             </>
           )}
         </TableRow>
@@ -92,9 +113,8 @@ export default function RequestsTable({
               overflow: 'hidden',
               cursor: 'pointer',
               transition: '0.2s',
-              '&:hover': {
-                boxShadow: 4,
-                transform: 'scale(1.01)',
+              '&:hover td': {
+                fontWeight: 600,
               },
             }}
             onClick={() => router.push(`${baseRoute}/${req.id}`)}
@@ -106,7 +126,7 @@ export default function RequestsTable({
             <TableCell>{req.currency}</TableCell>
             {requestType === 'Received' ? (
               <>
-                <TableCell>{req.requester?.name}</TableCell>
+                <TableCell>{req.requester?.name ?? ''}</TableCell>
               </>
             ) : (
               <>
@@ -116,7 +136,10 @@ export default function RequestsTable({
             )}
             <TableCell>
               <Box display="flex" gap={1}>
-                <PreviewButton requestId={req.idNumber} />
+                <PreviewButton
+                  onClick={() => openPreview(req.approvalFile?.id ?? '')}
+                />
+
                 {(canApproveMap?.[req.id] ?? false) && (
                   <>
                     <ApproveButton onClick={() => handleApprove(req.id)} />
@@ -128,6 +151,7 @@ export default function RequestsTable({
           </TableRow>
         ))}
       </TableBody>
+      {dialog}
     </Table>
   );
 }

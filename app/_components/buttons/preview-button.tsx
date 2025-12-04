@@ -3,21 +3,17 @@ import { IconButton } from '@mui/material';
 
 type PreviewButtonProps = {
   button?: React.ReactNode;
-  requestId: number;
+  onClick: () => void;
 };
 
-export default function PreviewButton({
-  button,
-  requestId,
-}: PreviewButtonProps) {
-  const onClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
+export default function PreviewButton({ button, onClick }: PreviewButtonProps) {
   if (button) {
     return (
       <span
-        onClick={(e) => onClick(e)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         {button}
@@ -28,7 +24,10 @@ export default function PreviewButton({
   return (
     <IconButton
       aria-label="preview"
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
       onMouseDown={(e) => e.stopPropagation()}
     >
       <FindInPage />

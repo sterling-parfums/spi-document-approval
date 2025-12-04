@@ -78,22 +78,3 @@ export async function downloadFile(fileId: string) {
   a.remove();
   URL.revokeObjectURL(downloadUrl);
 }
-
-export async function previewFile(fileId: string) {
-  const res = await getFile(fileId, { download: false });
-
-  if (!res.success) {
-    alert(`Error fetching file: ${res.status}`);
-    return;
-  }
-
-  const blob = res.data;
-
-  const url = URL.createObjectURL(blob);
-
-  const iframe = document.createElement('iframe');
-  iframe.src = url;
-  iframe.width = '100%';
-  iframe.height = '600px';
-  document.body.appendChild(iframe);
-}
