@@ -2,6 +2,7 @@
 import { ArrowBack } from '@mui/icons-material';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import ControlledFileUpload, {
   UploadedFileSummary,
@@ -27,16 +28,9 @@ type NewRequestInput = {
   supportingDocs: UploadedFileSummary[];
 };
 
-async function fetchUsers(): Promise<UserData[]> {
-  const res = await getUsers({ omitSelf: true });
-
-  if (!res.success) return [];
-
-  return res.data.map((user) => ({ id: user.id, name: user.name }));
-}
-
 export default function NewRequestScreen() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { handleSubmit, control } = useForm<NewRequestInput>({
     defaultValues: {
@@ -53,6 +47,16 @@ export default function NewRequestScreen() {
     },
   });
 
+  const fetchUsers = async (): Promise<UserData[]> => {
+    const res = await getUsers({ omitSelf: true });
+
+    if (!res.success) {
+      enqueueSnackbar('Unable to fetch users', { variant: 'error' });
+      return [];
+    }
+
+    return res.data.map((user) => ({ id: user.id, name: user.name }));
+  };
   const onSubmit = async (data: NewRequestInput) => {
     const approvalDocID: string = data.approvalDoc[0].id;
     const supportingDocIDs: string[] = data.supportingDocs.map((doc) => doc.id);
@@ -72,7 +76,8 @@ export default function NewRequestScreen() {
     });
 
     if (!res.success) {
-      alert(`Error ${res.status}`);
+      enqueueSnackbar(`Unable to submit request`, { variant: 'error' });
+      return;
     }
 
     router.push('/dashboard/requests/sent');

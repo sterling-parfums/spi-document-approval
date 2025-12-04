@@ -5,6 +5,7 @@ import { colors } from '@/utils/colors';
 import { ControlledFieldProps } from '@/utils/form-control-props.type';
 import { Close } from '@mui/icons-material';
 import { Box, Button, IconButton, Typography } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { useRef, useState } from 'react';
 import { FieldValues, useController } from 'react-hook-form';
 
@@ -33,6 +34,7 @@ export default function ControlledFileUpload<T extends FieldValues>({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const fileList = value as UploadedFileSummary[];
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleOpenPicker = () => {
     fileInputRef.current?.click();
@@ -50,7 +52,9 @@ export default function ControlledFileUpload<T extends FieldValues>({
       const result = await uploadFileClient(file);
 
       if (!result.success) {
-        alert(result.error);
+        enqueueSnackbar(`Unable to upload file ${result.error}`, {
+          variant: 'error',
+        });
         continue;
       }
 
