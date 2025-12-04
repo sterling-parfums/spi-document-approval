@@ -48,11 +48,19 @@ export function ControlledUserSelect<T extends FieldValues>({
         {label}
       </Typography>
       <Autocomplete
-        multiple
+        multiple={false}
         options={options}
         getOptionLabel={(o) => o.name}
-        value={options.filter((o) => value?.includes(o.id))}
-        onChange={(_, newValues) => onChange(newValues.map((v) => v.id))}
+        value={
+          //  options.filter((o) => value?.includes(o.id))
+          options.find((o) => o.id === value) || null
+        }
+        onChange={(_, newValues) =>
+          onChange(
+            // newValues.map((v) => v.id)
+            (newValues as UserData).id
+          )
+        }
         onOpen={handleOpen}
         loading={loading}
         renderInput={(params) => (
