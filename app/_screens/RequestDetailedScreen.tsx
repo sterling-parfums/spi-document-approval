@@ -100,7 +100,7 @@ export default function RequestDetailScreen({
     }
 
     fetchRequestDetails();
-  }, []);
+  }, [requestId]);
   return (
     <Box>
       <IconButton onClick={onClickBack} sx={{ zIndex: 10 }}>

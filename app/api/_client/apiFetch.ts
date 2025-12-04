@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-export async function apiFetch<T>(url: string, options: RequestInit = {}) {
+export async function apiFetch(url: string, options: RequestInit = {}) {
   const res = await fetch(url, {
     ...options,
     headers: {

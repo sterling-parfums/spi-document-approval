@@ -1,4 +1,3 @@
-import { writeFile } from 'fs/promises';
 import { findLoggedInUser } from '../_services/auth.service';
 import { uploadFile } from '../_services/sys-file.service';
 import { prisma } from '../prisma';
