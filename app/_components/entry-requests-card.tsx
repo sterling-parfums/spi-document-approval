@@ -8,9 +8,7 @@ import {
   handleReject,
 } from '../_screens/(views)/DesktopRequestsView';
 import { RequestResponse } from '../api/_services/request.service';
-import ApproveButton from './buttons/approve-button';
-import PreviewButton from './buttons/preview-button';
-import RejectButton from './buttons/reject-button';
+import ActionButton from './action-button';
 
 type ApprovalEntryProps = {
   data: RequestResponse;
@@ -95,13 +93,20 @@ export function RequestEntry({
             })}
           </Typography>
           <Box display="flex" gap={1}>
-            <PreviewButton
+            <ActionButton
+              buttonType="Preview"
               onClick={() => openPreview(data.approvalFile?.id ?? '')}
             />
             {!viewOnly && (
               <>
-                <ApproveButton onClick={() => handleApprove(data.id)} />
-                <RejectButton onClick={() => handleReject(data.id)} />
+                <ActionButton
+                  buttonType="Approve"
+                  onClick={() => handleApprove(data.id)}
+                />
+                <ActionButton
+                  buttonType="Reject"
+                  onClick={() => handleReject(data.id)}
+                />
               </>
             )}
           </Box>

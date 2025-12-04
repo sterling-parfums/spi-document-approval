@@ -8,8 +8,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import ApproveButton from '../buttons/approve-button';
-import RejectButton from '../buttons/reject-button';
+import ActionButton from '../action-button';
 
 type DetailsBottomBarProps = {
   amount: number;
@@ -49,8 +48,9 @@ export default function DetailsBottomBar({
       </Box>
 
       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'space-between' }}>
-        <ApproveButton
+        <ActionButton
           onClick={handleApprove}
+          buttonType="Approve"
           button={
             <Button
               variant="contained"
@@ -62,8 +62,9 @@ export default function DetailsBottomBar({
             </Button>
           }
         />
-        <RejectButton
+        <ActionButton
           onClick={handleReject}
+          buttonType="Reject"
           button={
             <Button
               variant="contained"
