@@ -39,6 +39,7 @@ export default function ActionButton({
 
   return (
     <IconButton
+      variant="icon"
       color={
         buttonType === 'Approve'
           ? 'success'

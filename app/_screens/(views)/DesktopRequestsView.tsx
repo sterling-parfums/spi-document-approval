@@ -57,17 +57,7 @@ export default function DesktopRequestsView({
       aria-label="add_request"
       color="inherit"
       onClick={() => router.push('/dashboard/requests/sent/new')}
-      sx={{
-        backgroundColor: '#1976d2',
-        color: 'white',
-        width: 48,
-        height: 48,
-        borderRadius: '50%',
-        boxShadow: 2,
-        '&:hover': {
-          backgroundColor: '#115293',
-        },
-      }}
+      sx={{ borderRadius: '50%' }}
     >
       <Add />
     </IconButton>

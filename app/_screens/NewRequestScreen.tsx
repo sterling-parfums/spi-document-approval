@@ -128,6 +128,14 @@ export default function NewRequestScreen() {
           placeholder="Enter title"
         />
         <ControlledStyledTextField<NewRequestInput>
+          name="description"
+          control={control}
+          label="Description"
+          placeholder="Enter description"
+          multiline
+          rows={6}
+        />
+        <ControlledStyledTextField<NewRequestInput>
           name="payee"
           control={control}
           label="Payee*"
@@ -169,14 +177,7 @@ export default function NewRequestScreen() {
           fetchUsers={fetchUsers}
           rules={{ required: 'Atleast 1 Approver is required' }}
         />
-        <ControlledStyledTextField<NewRequestInput>
-          name="description"
-          control={control}
-          label="Description"
-          placeholder="Enter description"
-          multiline
-          rows={6}
-        />
+
         <Box
           sx={{
             display: 'flex',

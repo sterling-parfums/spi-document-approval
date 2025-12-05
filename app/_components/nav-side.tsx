@@ -112,7 +112,7 @@ export default function SideNav({ items, username, onLogout }: SideNavProps) {
           {username}
         </Typography>
 
-        <IconButton onClick={onLogout}>
+        <IconButton onClick={onLogout} variant="icon">
           <Logout />
         </IconButton>
       </Box>

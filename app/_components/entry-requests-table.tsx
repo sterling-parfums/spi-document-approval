@@ -1,3 +1,4 @@
+import { ApprovalDecision } from '@/generated/prisma/enums';
 import { usePreviewDialog } from '@/hooks/use-preview-dialog';
 import { colors } from '@/utils/colors';
 import {
@@ -31,11 +32,23 @@ const columnWidths = {
   amount: '12%',
   currency: '8%',
   requester: '20%',
-  internalRef: '15%',
-  externalRef: '15%',
+  internalRef: '10%',
+  externalRef: '10%',
   actions: '12%',
 };
 
+function getRowBackgroundColor(status: ApprovalDecision | null) {
+  switch (status) {
+    case 'APPROVED':
+      return colors.approved;
+    case 'PENDING':
+      return colors.pending;
+    case 'REJECTED':
+      return colors.rejected;
+    default:
+      return colors.white;
+  }
+}
 export default function RequestsTable({
   data,
   baseRoute,
@@ -46,117 +59,101 @@ export default function RequestsTable({
   const { openPreview, dialog } = usePreviewDialog();
 
   return (
-    <Table
-      sx={{
-        borderCollapse: 'separate',
-        borderSpacing: '0 4px',
-        tableLayout: 'fixed',
-      }}
-    >
-      <TableHead>
-        <TableRow
-          sx={{
-            background: '#fff',
-            borderRadius: 2,
-            boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-            overflow: 'hidden',
-          }}
-        >
-          <TableCell sx={{ width: columnWidths.id }}>ID</TableCell>
-          <TableCell sx={{ width: columnWidths.date }}>Request Date</TableCell>
-          <TableCell sx={{ width: columnWidths.payee }}>Payee</TableCell>
-          <TableCell sx={{ width: columnWidths.amount }}>Amount</TableCell>
-          <TableCell sx={{ width: columnWidths.currency }}>Currency</TableCell>
+    <Box>
+      <Table
+        sx={{
+          borderCollapse: 'separate',
+          padding: 2,
+          backgroundColor: colors.white,
+        }}
+      >
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ width: columnWidths.id }}>ID</TableCell>
+            <TableCell sx={{ width: columnWidths.date }}>
+              Request Date
+            </TableCell>
+            <TableCell sx={{ width: columnWidths.payee }}>Payee</TableCell>
+            <TableCell sx={{ width: columnWidths.amount }}>Amount</TableCell>
+            <TableCell sx={{ width: columnWidths.currency }}>
+              Currency
+            </TableCell>
 
-          {requestType === 'Received' ? (
-            <>
-              <TableCell sx={{ width: columnWidths.requester }}>
-                Requester
-              </TableCell>
-              <TableCell sx={{ width: columnWidths.actions }} />
-            </>
-          ) : (
-            <>
-              <TableCell sx={{ width: columnWidths.internalRef }}>
-                Internal Ref
-              </TableCell>
-              <TableCell sx={{ width: columnWidths.externalRef }}>
-                External Ref
-              </TableCell>
-              <TableCell sx={{ width: columnWidths.actions }} />
-            </>
-          )}
-        </TableRow>
-      </TableHead>
-
-      <TableBody>
-        {data.map((req) => (
-          <TableRow
-            key={req.id}
-            sx={{
-              background: (() => {
-                switch (req.status) {
-                  case 'APPROVED':
-                    return colors.approved;
-                  case 'PENDING':
-                    return colors.pending;
-                  case 'REJECTED':
-                    return colors.rejected;
-                  default:
-                    return colors.white;
-                }
-              })(),
-              borderRadius: 2,
-              boxShadow: '0px 2px 8px rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              cursor: 'pointer',
-              transition: '0.2s',
-              '&:hover td': {
-                fontWeight: 600,
-              },
-            }}
-            onClick={() => router.push(`${baseRoute}/${req.id}`)}
-          >
-            <TableCell>{req.idNumber}</TableCell>
-            <TableCell>{req.createdAt.toLocaleDateString('en-GB')}</TableCell>
-            <TableCell>{req.payee}</TableCell>
-            <TableCell>{req.amount.toFixed(2)}</TableCell>
-            <TableCell>{req.currency}</TableCell>
             {requestType === 'Received' ? (
               <>
-                <TableCell>{req.requester?.name ?? ''}</TableCell>
+                <TableCell sx={{ width: columnWidths.requester }}>
+                  Requester
+                </TableCell>
+                <TableCell sx={{ width: columnWidths.actions }} />
               </>
             ) : (
               <>
-                <TableCell>{req.internalRef}</TableCell>
-                <TableCell>{req.externalRef}</TableCell>
+                <TableCell sx={{ width: columnWidths.internalRef }}>
+                  Internal Ref
+                </TableCell>
+                <TableCell sx={{ width: columnWidths.externalRef }}>
+                  External Ref
+                </TableCell>
+                <TableCell sx={{ width: columnWidths.actions }} />
               </>
             )}
-            <TableCell>
-              <Box display="flex" gap={1}>
-                <ActionButton
-                  buttonType="Preview"
-                  onClick={() => openPreview(req.approvalFile?.id ?? '')}
-                />
-
-                {(canApproveMap?.[req.id] ?? false) && (
-                  <>
-                    <ActionButton
-                      buttonType="Approve"
-                      onClick={() => handleApprove(req.id)}
-                    />
-                    <ActionButton
-                      buttonType="Reject"
-                      onClick={() => handleReject(req.id)}
-                    />
-                  </>
-                )}
-              </Box>
-            </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
+        </TableHead>
+
+        <TableBody>
+          {data.map((req) => (
+            <TableRow
+              hover
+              key={req.id}
+              sx={{
+                backgroundColor: (() => getRowBackgroundColor(req.status))(),
+                '&.MuiTableRow-root:hover': {
+                  backgroundColor: (() => getRowBackgroundColor(req.status))(),
+                },
+              }}
+              onClick={() => router.push(`${baseRoute}/${req.id}`)}
+            >
+              <TableCell>{req.idNumber}</TableCell>
+              <TableCell>{req.createdAt.toLocaleDateString('en-GB')}</TableCell>
+              <TableCell>{req.payee}</TableCell>
+              <TableCell>{req.amount.toFixed(2)}</TableCell>
+              <TableCell>{req.currency}</TableCell>
+              {requestType === 'Received' ? (
+                <>
+                  <TableCell>{req.requester?.name ?? ''}</TableCell>
+                </>
+              ) : (
+                <>
+                  <TableCell>{req.internalRef}</TableCell>
+                  <TableCell>{req.externalRef}</TableCell>
+                </>
+              )}
+              <TableCell>
+                <Box display="flex" gap={1}>
+                  <ActionButton
+                    buttonType="Preview"
+                    onClick={() => openPreview(req.approvalFile?.id ?? '')}
+                  />
+
+                  {(canApproveMap?.[req.id] ?? false) && (
+                    <>
+                      <ActionButton
+                        buttonType="Approve"
+                        onClick={() => handleApprove(req.id)}
+                      />
+                      <ActionButton
+                        buttonType="Reject"
+                        onClick={() => handleReject(req.id)}
+                      />
+                    </>
+                  )}
+                </Box>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       {dialog}
-    </Table>
+    </Box>
   );
 }

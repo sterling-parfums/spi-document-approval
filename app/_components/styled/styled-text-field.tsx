@@ -1,6 +1,5 @@
 'use client';
 
-import { colors } from '@/utils/colors';
 import { TextField, TextFieldProps } from '@mui/material';
 import { useState } from 'react';
 
@@ -28,22 +27,7 @@ export default function StyledTextField(props: StyledTextFieldProps) {
       multiline={props.multiline}
       rows={props.rows}
       sx={{
-        '& .MuiOutlinedInput-root': {
-          borderRadius: 2,
-          fontFamily: 'ComingSoon',
-          fontSize: 16,
-          paddingLeft: 1.5,
-          paddingRight: 1.5,
-          '& fieldset': {
-            borderColor: isFocused ? colors.focused : colors.blurred,
-          },
-          '&:hover fieldset': {
-            borderColor: colors.focused,
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: colors.focused,
-          },
-        },
+        height: '100%',
         ...props.sx,
       }}
     />

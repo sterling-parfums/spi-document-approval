@@ -44,9 +44,7 @@ export function ControlledUserSelect<T extends FieldValues>({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
-      <Typography variant="caption" sx={{ mb: 0.5, color: 'text.secondary' }}>
-        {label}
-      </Typography>
+      <Typography variant="caption">{label}</Typography>
       <Autocomplete
         multiple={false}
         options={options}
