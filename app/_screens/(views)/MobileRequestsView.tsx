@@ -2,7 +2,7 @@
 
 import { RequestEntry } from '@/app/_components/entry-requests-card';
 import SearchFilters from '@/app/_components/search-filters';
-import { RequestFilters } from '@/app/_types/request';
+import { RequestFilters, RequestType } from '@/app/_types/request';
 import { RequestResponse } from '@/app/api/_services/request.service';
 import { usePreviewDialog } from '@/hooks/use-preview-dialog';
 import { Box } from '@mui/material';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 type RequestsScreenProps = {
   data: RequestResponse[];
   baseRoute: string;
+  requestType: RequestType;
   filters: RequestFilters;
   applyFilters: (f: RequestFilters) => void;
   page: number;
@@ -21,6 +22,7 @@ type RequestsScreenProps = {
 export default function MobileRequestsView({
   data,
   baseRoute,
+  requestType,
   applyFilters,
   canApproveMap,
 }: RequestsScreenProps) {
@@ -36,7 +38,7 @@ export default function MobileRequestsView({
         flexDirection: 'column',
       }}
     >
-      <SearchFilters onSearch={applyFilters} />
+      <SearchFilters onSearch={applyFilters} requestType={requestType} />
       {data.map((item) => (
         <RequestEntry
           key={item.id}

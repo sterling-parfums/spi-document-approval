@@ -1,4 +1,4 @@
-import { ApprovalDecision, Prisma } from '@/generated/prisma/client';
+import { Prisma } from '@/generated/prisma/client';
 import { NextRequest } from 'next/server';
 import { findLoggedInUser } from '../../_services/auth.service';
 import { toRequestResponse } from '../../_services/request.service';
@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
 
   const payee = searchParams.get('payee') ?? undefined;
   const internalRef = searchParams.get('internalRef') ?? undefined;
+  const externalRef = searchParams.get('externalRef') ?? undefined;
 
   const idNumber = searchParams.get('idNumber');
   const amountFrom = searchParams.get('amountFrom');
@@ -23,22 +24,29 @@ export async function GET(req: NextRequest) {
   const toDate = searchParams.get('toDate');
 
   const statusQuery = searchParams.get('status');
-  const statusIsPending = statusQuery === 'PENDING';
+  const statusIsValid =
+    statusQuery === 'PENDING' ||
+    statusQuery === 'APPROVED' ||
+    statusQuery === 'REJECTED';
 
   const pageQuery = searchParams.get('page') ?? 1;
   const pageSizeQuery = searchParams.get('pageSize') ?? 20;
+
+  const sortBy = searchParams.get('sortBy');
+  const sortOrder = searchParams.get('sortOrder');
 
   const skip = (Number(pageQuery) - 1) * Number(pageSizeQuery);
   const where = {
     approvals: {
       some: {
         approverId: user.id,
-        decision: statusIsPending ? ApprovalDecision.PENDING : undefined,
+        decision: statusIsValid ? statusQuery : undefined,
       },
     },
 
     ...(payee && { payee: { contains: payee, mode: 'insensitive' } }),
     ...(internalRef && { internalRef: internalRef }),
+    ...(externalRef && { externalRef: externalRef }),
 
     ...(idNumber && { idNumber: Number(idNumber) }),
 
@@ -65,9 +73,14 @@ export async function GET(req: NextRequest) {
     skip,
     take: Number(pageSizeQuery),
     where,
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder as 'asc' | 'desc',
+          }
+        : {
+            createdAt: 'desc',
+          },
     include: {
       approvals: true,
       requester: true,

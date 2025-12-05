@@ -1,6 +1,6 @@
 'use client';
 
-import { Search } from '@mui/icons-material';
+import { ArrowDownward, ArrowUpward, Search } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -18,13 +18,18 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { RequestFilters } from '../_types/request';
+import { RequestFilters, RequestType } from '../_types/request';
 import DatePickerField from './date-picker';
 type SearchFiltersProps = {
   onSearch: (f: RequestFilters) => void;
+  requestType: RequestType;
 };
 
-export default function SearchFilters({ onSearch }: SearchFiltersProps) {
+export default function SearchFilters({
+  onSearch,
+  requestType,
+}: SearchFiltersProps) {
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [filters, setFilters] = useState<RequestFilters>({
     idNumber: undefined,
     payee: '',
@@ -33,6 +38,9 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
     fromDate: '',
     toDate: '',
     internalRef: '',
+    externalRef: '',
+    sortBy: '',
+    sortOrder: 'asc',
   });
 
   const reset = () => {
@@ -44,6 +52,9 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
       fromDate: '',
       toDate: '',
       internalRef: '',
+      externalRef: '',
+      sortBy: '',
+      sortOrder: 'asc',
     });
   };
 
@@ -56,6 +67,14 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
 
   const onApply = () => {
     onSearch(filters);
+  };
+
+  const toggleOrder = () => {
+    setSortOrder((prev) => {
+      const newOrder = prev === 'asc' ? 'desc' : 'asc';
+      handleChange('sortOrder', newOrder);
+      return newOrder;
+    });
   };
 
   const theme = useTheme();
@@ -116,8 +135,8 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
         gap: 2,
       }}
     >
-      <Grid container spacing={2} sx={{ maxWidth: 700 }}>
-        <Grid size={6}>
+      <Grid container spacing={2} sx={{ maxWidth: 900 }}>
+        <Grid size={4}>
           <FormControl fullWidth>
             <InputLabel>Payee</InputLabel>
             <OutlinedInput
@@ -128,7 +147,7 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
           </FormControl>
         </Grid>
 
-        <Grid size={3}>
+        <Grid size={2}>
           <FormControl fullWidth>
             <InputLabel>ID</InputLabel>
             <OutlinedInput
@@ -139,7 +158,7 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
           </FormControl>
         </Grid>
 
-        <Grid size={3}>
+        <Grid size={2}>
           <FormControl fullWidth>
             <InputLabel id="statusLabel">Status</InputLabel>
             <Select
@@ -157,7 +176,43 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
           </FormControl>
         </Grid>
 
-        <Grid size={3}>
+        <Grid size={2.5}>
+          <Box display="flex" alignItems="center">
+            <FormControl fullWidth>
+              <InputLabel id="sortLabel">Sort By</InputLabel>
+              <Select
+                labelId="sortLabel"
+                id="sortSelect"
+                value={filters.sortBy}
+                label="Sort By"
+                onChange={(e) => handleChange('sortBy', e.target.value)}
+              >
+                <MenuItem value={'idNumber'}>ID</MenuItem>
+                <MenuItem value={'createdAt'}>Request Date</MenuItem>
+                <MenuItem value={'payee'}>Payee</MenuItem>
+                <MenuItem value={'amount'}>Amount</MenuItem>
+                <MenuItem value={'currency'}>Currency</MenuItem>
+                {requestType === 'Sent' ? (
+                  [
+                    <MenuItem key="externalRef" value={'externalRef'}>
+                      External Ref
+                    </MenuItem>,
+                    <MenuItem key="internalRef" value={'internalRef'}>
+                      Internal Ref
+                    </MenuItem>,
+                  ]
+                ) : (
+                  <MenuItem value={'requester'}>Requester</MenuItem>
+                )}
+              </Select>
+            </FormControl>
+            <IconButton onClick={toggleOrder} size="small">
+              {sortOrder === 'asc' ? <ArrowUpward /> : <ArrowDownward />}
+            </IconButton>
+          </Box>
+        </Grid>
+
+        <Grid size={2}>
           <FormControl fullWidth>
             <InputLabel>Amount</InputLabel>
             <OutlinedInput
@@ -174,7 +229,7 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
           </FormControl>
         </Grid>
 
-        <Grid size={3}>
+        <Grid size={2}>
           <FormControl fullWidth>
             <DatePickerField
               label="From"
@@ -186,7 +241,7 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
           </FormControl>
         </Grid>
 
-        <Grid size={3}>
+        <Grid size={2}>
           <FormControl fullWidth>
             <DatePickerField
               label="To"
@@ -205,6 +260,17 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
               label="Internal Ref"
               value={filters.internalRef}
               onChange={(e) => handleChange('internalRef', e.target.value)}
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid size={3}>
+          <FormControl fullWidth>
+            <InputLabel>External Ref</InputLabel>
+            <OutlinedInput
+              label="External Ref"
+              value={filters.internalRef}
+              onChange={(e) => handleChange('externalRef', e.target.value)}
             />
           </FormControl>
         </Grid>

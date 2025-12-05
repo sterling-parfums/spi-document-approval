@@ -81,7 +81,7 @@ export default function DesktopRequestsView({
         {requestType === 'Sent' && new_request_button}
       </Box>
 
-      <SearchFilters onSearch={applyFilters} />
+      <SearchFilters onSearch={applyFilters} requestType={requestType} />
       <RequestsTable
         data={data}
         baseRoute={baseRoute}

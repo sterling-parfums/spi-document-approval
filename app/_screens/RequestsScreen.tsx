@@ -80,6 +80,7 @@ export default function RequestsScreen({
         <MobileRequestsView
           data={data}
           baseRoute={baseRoute}
+          requestType={requestType}
           filters={filters}
           applyFilters={setFilters}
           page={page}

@@ -21,7 +21,8 @@ export async function getRequests(
   if (filters?.payee) query.set('payee', filters.payee);
   if (filters?.idNumber !== undefined)
     query.set('idNumber', String(filters.idNumber));
-  if (filters?.status) query.set('status', filters.status);
+  if (filters?.status && filters.status !== 'ALL')
+    query.set('status', filters.status);
   if (filters?.amountFrom !== undefined)
     query.set('amountFrom', String(filters.amountFrom));
   if (filters?.amountTo !== undefined)
@@ -29,6 +30,10 @@ export async function getRequests(
   if (filters?.fromDate) query.set('fromDate', filters.fromDate);
   if (filters?.toDate) query.set('toDate', filters.toDate);
   if (filters?.internalRef) query.set('internalRef', filters.internalRef);
+  if (filters?.externalRef) query.set('externalRef', filters.externalRef);
+
+  if (filters?.sortBy) query.set('sortBy', filters.sortBy);
+  if (filters?.sortOrder) query.set('sortOrder', filters.sortOrder);
 
   if (params?.page) query.set('page', String(params.page));
   if (params?.pageSize) query.set('pageSize', String(params.pageSize));
