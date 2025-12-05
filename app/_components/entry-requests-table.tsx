@@ -26,11 +26,12 @@ type RequestsTableProps = {
 };
 
 const columnWidths = {
-  id: '8%',
-  date: '12%',
-  payee: '28%',
-  amount: '12%',
-  currency: '8%',
+  id: '5%',
+  date: '9%',
+  payee: '18%',
+  title: '18%',
+  amount: '10%',
+  currency: '5%',
   requester: '20%',
   internalRef: '10%',
   externalRef: '10%',
@@ -74,6 +75,7 @@ export default function RequestsTable({
               Request Date
             </TableCell>
             <TableCell sx={{ width: columnWidths.payee }}>Payee</TableCell>
+            <TableCell sx={{ width: columnWidths.title }}>Title</TableCell>
             <TableCell sx={{ width: columnWidths.amount }}>Amount</TableCell>
             <TableCell sx={{ width: columnWidths.currency }}>
               Currency
@@ -116,6 +118,7 @@ export default function RequestsTable({
               <TableCell>{req.idNumber}</TableCell>
               <TableCell>{req.createdAt.toLocaleDateString('en-GB')}</TableCell>
               <TableCell>{req.payee}</TableCell>
+              <TableCell>{req.title}</TableCell>
               <TableCell>
                 {req.amount.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
