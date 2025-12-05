@@ -22,6 +22,11 @@ export type RequestWithApprovalFile = Request &
     include: { approvalFile: true };
   }>;
 
+export type RequestWithAllFiles = Request &
+  Prisma.RequestGetPayload<{
+    include: { approvalFile: true; supportingFiles: true };
+  }>;
+
 export type RequestWithApprovalsWithApprovers = Request &
   Prisma.RequestGetPayload<{
     include: { approvals: { include: { approver: true } } };
@@ -79,6 +84,25 @@ export function toRequestResponse(
     status: getRequestStatus(request),
     idNumber: request.idNumber,
     approvalFile: toFileResponse(request.approvalFile),
+  };
+}
+
+export type RequestResponseWithFiles = RequestResponse & {
+  supportingFiles?: {
+    id: string;
+    filename: string;
+  }[];
+};
+
+export function toRequestResponseWithFiles(
+  request: Request &
+    RequestWithApprovals &
+    RequestWithRequester &
+    RequestWithAllFiles
+): RequestResponseWithFiles {
+  return {
+    ...toRequestResponse(request),
+    supportingFiles: request.supportingFiles.map(toFileResponse),
   };
 }
 

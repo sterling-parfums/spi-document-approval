@@ -103,17 +103,20 @@ export default function RequestDetailScreen({
   }, [requestId]);
   return (
     <Box>
-      <IconButton onClick={onClickBack} sx={{ zIndex: 10 }}>
+      <IconButton onClick={onClickBack} sx={{ mb: 2 }}>
         <ArrowBackIcon />
       </IconButton>
-      <Typography variant="h2" sx={{ mb: 2 }}>
-        {data.payee}
-      </Typography>
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        {`${data.amount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-        })} ${data.currency}`}
-      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Typography variant="h5">{`ID: ${data.idNumber}`}</Typography>
+        <Typography variant="h2" sx={{ mb: 2 }}>
+          {data.payee}
+        </Typography>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          {`${data.amount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+          })} ${data.currency}`}
+        </Typography>
+      </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={tabVal}

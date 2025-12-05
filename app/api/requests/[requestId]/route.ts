@@ -1,5 +1,5 @@
 import { findLoggedInUser } from '../../_services/auth.service';
-import { toRequestResponse } from '../../_services/request.service';
+import { toRequestResponseWithFiles } from '../../_services/request.service';
 import { prisma } from '../../prisma';
 
 export async function GET(
@@ -26,5 +26,5 @@ export async function GET(
     return new Response(null, { status: 404 });
   }
 
-  return Response.json(toRequestResponse(request), { status: 200 });
+  return Response.json(toRequestResponseWithFiles(request), { status: 200 });
 }

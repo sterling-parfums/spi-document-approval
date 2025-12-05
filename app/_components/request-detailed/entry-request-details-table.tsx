@@ -1,18 +1,18 @@
 'use client';
 
-import { RequestResponse } from '@/app/api/_services/request.service';
+import { RequestResponseWithFiles } from '@/app/api/_services/request.service';
 import {
-  Link,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
+  Typography,
 } from '@mui/material';
 
 type ApprovalTableProps = {
-  data: RequestResponse & { approvers: string[] };
+  data: RequestResponseWithFiles & { approvers: string[] };
 };
 
 type ApprovalTableRowProps = {
@@ -38,11 +38,17 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
         <TableBody>
           <ApprovalTableRow header="Title" data={data.title} />
 
-          <ApprovalTableRow header="Payee" data={data.payee} />
-
           <ApprovalTableRow
             header="Description"
             data={data.description || '—'}
+          />
+          <ApprovalTableRow header="Payee" data={data.payee} />
+
+          <ApprovalTableRow
+            header="Amount"
+            data={`${data.amount.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })} ${data.currency}`}
           />
 
           <ApprovalTableRow
@@ -56,13 +62,6 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
           />
 
           <ApprovalTableRow
-            header="Amount"
-            data={`${data.amount.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-            })} ${data.currency}`}
-          />
-
-          <ApprovalTableRow
             header="Status"
             data={data.status?.toString() ?? '—'}
           />
@@ -73,19 +72,20 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
           />
 
           <ApprovalTableRow
-            header="Supporting Document"
+            header="Approval Document"
+            data={data.approvalFile?.filename}
+          />
+
+          <ApprovalTableRow
+            header="Supporting Documents"
             data={
-              data.approvalFile ? (
-                <Link
-                  href={`/api/files/${data.approvalFile.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {data.approvalFile.filename}
-                </Link>
-              ) : (
-                'No document'
-              )
+              data.supportingFiles?.length
+                ? data.supportingFiles?.map((file) => {
+                    return (
+                      <Typography key={file.id}>{file.filename}</Typography>
+                    );
+                  })
+                : '-'
             }
           />
         </TableBody>
