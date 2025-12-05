@@ -191,6 +191,15 @@ export const inputsCustomizations: Components<Theme> = {
             },
           },
           {
+            props: {
+              size: 'large',
+            },
+            style: {
+              width: '3rem',
+              height: '3rem',
+            },
+          },
+          {
             props: { variant: 'contained' },
             style: {
               backgroundColor: gray[800],

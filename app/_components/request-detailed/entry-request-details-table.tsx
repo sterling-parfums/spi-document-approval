@@ -23,7 +23,9 @@ type ApprovalTableRowProps = {
 function ApprovalTableRow({ header, data }: ApprovalTableRowProps) {
   return (
     <TableRow>
-      <TableCell sx={{ fontWeight: 'bold', width: '200px' }}>
+      <TableCell
+        sx={{ fontWeight: 'bold', width: { sm: '100px', md: '200px' } }}
+      >
         {header}
       </TableCell>
       <TableCell>{data}</TableCell>

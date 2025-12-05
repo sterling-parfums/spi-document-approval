@@ -93,6 +93,7 @@ export default function NewRequestScreen() {
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
         sx={{
           maxWidth: 700,
           mx: 'auto',

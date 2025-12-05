@@ -5,7 +5,8 @@ import SearchFilters from '@/app/_components/search-filters';
 import { RequestFilters, RequestType } from '@/app/_types/request';
 import { RequestResponse } from '@/app/api/_services/request.service';
 import { usePreviewDialog } from '@/hooks/use-preview-dialog';
-import { Box } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { Box, IconButton, Paper } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 type RequestsScreenProps = {
@@ -29,7 +30,20 @@ export default function MobileRequestsView({
   const router = useRouter();
 
   const { openPreview, dialog } = usePreviewDialog();
-
+  const new_request_button = (
+    <IconButton
+      aria-label="add_request"
+      variant="contained"
+      size="large"
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push('/dashboard/requests/sent/new');
+      }}
+      sx={{ borderRadius: '50%' }}
+    >
+      <Add />
+    </IconButton>
+  );
   return (
     <Box
       sx={{
@@ -50,6 +64,9 @@ export default function MobileRequestsView({
         />
       ))}
       {dialog}
+      <Paper sx={{ position: 'fixed', bottom: 20 }}>
+        {requestType === 'Sent' && new_request_button}
+      </Paper>
     </Box>
   );
 }

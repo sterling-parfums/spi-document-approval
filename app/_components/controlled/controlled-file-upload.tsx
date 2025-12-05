@@ -1,7 +1,6 @@
 'use client';
 
 import { uploadFileClient } from '@/app/api/_client/file.client';
-import { colors } from '@/utils/colors';
 import { ControlledFieldProps } from '@/utils/form-control-props.type';
 import { Close } from '@mui/icons-material';
 import { Box, Button, IconButton, Typography } from '@mui/material';
@@ -93,17 +92,7 @@ export default function ControlledFileUpload<T extends FieldValues>({
       />
 
       {/* Upload button */}
-      <Button
-        variant="contained"
-        sx={{
-          border: 1,
-          background: 'transparent',
-          borderColor: colors.blurred,
-          color: colors.black,
-        }}
-        disableElevation
-        onClick={handleOpenPicker}
-      >
+      <Button variant="outlined" onClick={handleOpenPicker}>
         {loading
           ? 'Uploading File...'
           : multiple

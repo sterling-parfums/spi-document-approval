@@ -55,7 +55,7 @@ export default function DesktopRequestsView({
   const new_request_button = (
     <IconButton
       aria-label="add_request"
-      color="inherit"
+      variant="contained"
       onClick={() => router.push('/dashboard/requests/sent/new')}
       sx={{ borderRadius: '50%' }}
     >

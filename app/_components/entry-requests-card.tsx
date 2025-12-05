@@ -55,28 +55,29 @@ export function RequestEntry({
       onClick={onClick}
     >
       <CardContent>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          flexWrap="wrap"
-        >
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="caption">
             {`ID ${data.idNumber} • `}
             {data.payee}
           </Typography>
         </Box>
         <Box
-          mt={2}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
+          mt={2}
         >
-          {' '}
+          <Typography variant="subtitle1">{data.title}</Typography>
+        </Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4">
-            {data.amount.toFixed(2)} {` ${data.currency}`}
+            {data.amount.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
+            {` ${data.currency}`}
           </Typography>
         </Box>
+
         <Box
           mt={2}
           display="flex"
