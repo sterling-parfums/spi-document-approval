@@ -123,7 +123,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ModalProps={{ keepMounted: true }}
             sx={{
               display: { xs: 'block', md: 'block' },
-              '& .MuiDrawer-paper': { width: drawerWidth },
+              '& .MuiDrawer-paper': { width: drawerWidth, overflowX: 'hidden' },
             }}
           >
             {drawer}
@@ -134,7 +134,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           component="main"
           sx={{
             flexGrow: 1,
-            p: 1,
             width: { md: `calc(100% - ${drawerWidth}px)` },
             mt: isMobile ? 8 : 0,
           }}
