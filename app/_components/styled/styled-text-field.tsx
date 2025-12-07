@@ -21,8 +21,6 @@ export default function StyledTextField(props: StyledTextFieldProps) {
   return (
     <TextField
       {...props}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
       fullWidth
       multiline={props.multiline}
       rows={props.rows}
