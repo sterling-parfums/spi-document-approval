@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  getPreviewFileLink,
+  openApprovalFilePreview,
+} from '@/app/api/_client/file.client';
 import { RequestResponseWithFiles } from '@/app/api/_services/request.service';
 import {
   Paper,
@@ -8,8 +12,8 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
 } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 type ApprovalTableProps = {
   data: RequestResponseWithFiles & { approvers: string[] };
@@ -33,7 +37,27 @@ function ApprovalTableRow({ header, data }: ApprovalTableRowProps) {
   );
 }
 
+type FileData = Record<string, string>;
+
 export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
+  const [supportingURLs, setSupportingURLs] = useState<FileData>({});
+  useEffect(() => {
+    async function loadSupportingFiles() {
+      const urls: FileData = {};
+      if (!data.supportingFiles) return;
+
+      await Promise.all(
+        data.supportingFiles.map(async (f) => {
+          const url = await getPreviewFileLink(f.id);
+          if (url) urls[f.id] = url;
+        })
+      );
+
+      setSupportingURLs(urls);
+    }
+
+    loadSupportingFiles();
+  }, []);
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 2, mb: 3 }}>
       <Table key={data.id}>
@@ -75,7 +99,11 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
 
           <ApprovalTableRow
             header="Approval Document"
-            data={data.approvalFile?.filename}
+            data={
+              <a href="#" onClick={() => openApprovalFilePreview(data.id)}>
+                {data.approvalFile?.filename ?? '-'}
+              </a>
+            }
           />
 
           <ApprovalTableRow
@@ -84,7 +112,13 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
               data.supportingFiles?.length
                 ? data.supportingFiles?.map((file) => {
                     return (
-                      <Typography key={file.id}>{file.filename}</Typography>
+                      <a
+                        key={file.id}
+                        href={supportingURLs[file.id]}
+                        target="_blank"
+                      >
+                        {file.filename}
+                      </a>
                     );
                   })
                 : '-'

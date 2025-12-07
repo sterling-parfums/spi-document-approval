@@ -3,9 +3,9 @@
 import { RequestEntry } from '@/app/_components/entry-requests-card';
 import SearchFilters from '@/app/_components/search-filters';
 import { RequestType } from '@/app/_types/request';
+import { openPreview } from '@/app/api/_client/file.client';
 import { ApprovalDecision } from '@/generated/prisma/enums';
 import { useRequests } from '@/hooks/RequestsContext';
-import { usePreviewDialog } from '@/hooks/use-preview-dialog';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Pagination, Paper, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,6 @@ export default function MobileRequestsView({
     if (!status) return false;
     return requestType === 'Received' && status === 'PENDING';
   };
-  const { openPreview, dialog } = usePreviewDialog();
   const new_request_button = (
     <IconButton
       aria-label="add_request"
@@ -56,7 +55,7 @@ export default function MobileRequestsView({
           data={item}
           sx={{ mb: 2 }}
           onClick={() => router.push(`${baseRoute}/${item.id}`)}
-          viewOnly={canApprove(item.status)}
+          viewOnly={!canApprove(item.status)}
           openPreview={openPreview}
         />
       ))}
@@ -68,8 +67,6 @@ export default function MobileRequestsView({
           color="primary"
         />
       </Stack>
-
-      {dialog}
       <Paper sx={{ position: 'fixed', bottom: 20 }}>
         {requestType === 'Sent' && new_request_button}
       </Paper>

@@ -1,4 +1,6 @@
+import { FileResponse } from '../_services/file.service';
 import { apiFetch } from './apiFetch';
+import { getRequestByID } from './request.client';
 
 export type UploadedFile = {
   id: string;
@@ -33,13 +35,14 @@ export async function uploadFileClient(file: File) {
   return { success: true, data };
 }
 
+type FileRequestResult =
+  | { success: true; data: Blob; headers: Headers }
+  | { success: false; status: number };
+
 export async function getFile(
   fileId: string,
   params: { download: boolean } = { download: true }
-): Promise<
-  | { success: true; data: Blob; headers: Headers }
-  | { success: false; status: number }
-> {
+): Promise<FileRequestResult> {
   const res = await apiFetch(
     `/api/files/${fileId}${!params.download ? '/preview' : ''}`
   );
@@ -53,6 +56,27 @@ export async function getFile(
     success: true,
     data: blob,
     headers: res.headers,
+  };
+}
+
+type SignedFileRequestResult =
+  | { success: true; data: FileResponse }
+  | { success: false; status: number };
+
+export async function getSignedFile(
+  requestId: string
+): Promise<SignedFileRequestResult> {
+  const res = await apiFetch(`/api/rquests/${requestId}/signed`);
+
+  if (!res.ok) {
+    return { success: false, status: res.status };
+  }
+
+  const fileData: FileResponse = await res.json();
+
+  return {
+    success: true,
+    data: fileData,
   };
 }
 
@@ -77,4 +101,54 @@ export async function downloadFile(fileId: string) {
   a.click();
   a.remove();
   URL.revokeObjectURL(downloadUrl);
+}
+
+export async function getPreviewFileLink(fileId: string) {
+  if (!fileId) return;
+
+  const res = await getFile(fileId, { download: false });
+
+  if (!res.success) {
+    console.error(`Failed to fetch file ${fileId} (status ${res.status})`);
+    return null;
+  }
+
+  const blob = res.data;
+  const url = URL.createObjectURL(blob);
+
+  return url;
+}
+
+export async function openPreview(fileId: string) {
+  const url = await getPreviewFileLink(fileId);
+
+  if (!url) return;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_self';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  setTimeout(() => URL.revokeObjectURL(url), 7000);
+}
+
+export async function openApprovalFilePreview(requestId: string) {
+  const signed = await getSignedFile(requestId);
+
+  if (signed.success) {
+    await openPreview(signed.data.id);
+    return;
+  }
+
+  const req = await getRequestByID(requestId);
+
+  if (!req.success) {
+    console.error(`Unable to fetch request ${requestId}`);
+    return;
+  }
+
+  await openPreview(req.data.approvalFile.id);
+  return;
 }

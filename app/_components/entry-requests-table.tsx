@@ -1,5 +1,4 @@
 import { ApprovalDecision } from '@/generated/prisma/enums';
-import { usePreviewDialog } from '@/hooks/use-preview-dialog';
 import { colors } from '@/utils/colors';
 import {
   Box,
@@ -16,6 +15,7 @@ import {
   handleReject,
 } from '../_screens/(views)/DesktopRequestsView';
 import { RequestType } from '../_types/request';
+import { openApprovalFilePreview } from '../api/_client/file.client';
 import { RequestResponse } from '../api/_services/request.service';
 import ActionButton from './action-button';
 
@@ -63,7 +63,6 @@ export default function RequestsTable({
   paginationProps,
 }: RequestsTableProps) {
   const router = useRouter();
-  const { openPreview, dialog } = usePreviewDialog();
 
   const { page, setPage, totalCount, rowsPerPage } = paginationProps;
 
@@ -163,7 +162,7 @@ export default function RequestsTable({
                 <Box display="flex" gap={1}>
                   <ActionButton
                     buttonType="Preview"
-                    onClick={() => openPreview(req.approvalFile?.id ?? '')}
+                    onClick={() => openApprovalFilePreview(req.id)}
                   />
 
                   {canApprove(req.status) && (
@@ -184,7 +183,6 @@ export default function RequestsTable({
           ))}
         </TableBody>
       </Table>
-      {dialog}
     </Box>
   );
 }
