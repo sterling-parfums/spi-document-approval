@@ -19,6 +19,18 @@ export function toUserResponse(user: User): UserResponse {
   };
 }
 
+export type UserMinimalResponse = {
+  id: string;
+  name: string;
+};
+
+export function toUserMinimalResponse(user: User): UserMinimalResponse {
+  return {
+    id: user.id,
+    name: user.name,
+  };
+}
+
 export type MeUserResponse = UserResponse & {
   signatureFileId: string | null;
 };

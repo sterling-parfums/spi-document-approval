@@ -4,6 +4,7 @@ import {
   Request,
   User,
 } from '@/generated/prisma/client';
+import { toFileResponse } from './file.service';
 import { toUserResponse } from './user.service';
 
 type RequestWithRequester = Request &
@@ -16,10 +17,28 @@ export type RequestWithApprovals = Request &
     include: { approvals: true };
   }>;
 
+export type RequestWithApprovalFile = Request &
+  Prisma.RequestGetPayload<{
+    include: { approvalFile: true };
+  }>;
+
+export type RequestWithAllFiles = Request &
+  Prisma.RequestGetPayload<{
+    include: { approvalFile: true; supportingFiles: true };
+  }>;
+
 export type RequestWithApprovalsWithApprovers = Request &
   Prisma.RequestGetPayload<{
     include: { approvals: { include: { approver: true } } };
   }>;
+
+export type DashboardStats = {
+  pendingForMe: number;
+  pendingByMe: number;
+  approvedByMe: number;
+  rejectedByMe: number;
+  totalRequests: number;
+};
 
 export type RequestResponse = {
   id: string;
@@ -52,7 +71,10 @@ export type RequestResponse = {
 };
 
 export function toRequestResponse(
-  request: Request & RequestWithApprovals & RequestWithRequester
+  request: Request &
+    RequestWithApprovals &
+    RequestWithRequester &
+    RequestWithApprovalFile
 ): RequestResponse {
   return {
     id: request.id,
@@ -69,6 +91,26 @@ export function toRequestResponse(
     requester: toUserResponse(request.requester),
     status: getRequestStatus(request),
     idNumber: request.idNumber,
+    approvalFile: toFileResponse(request.approvalFile),
+  };
+}
+
+export type RequestResponseWithFiles = RequestResponse & {
+  supportingFiles?: {
+    id: string;
+    filename: string;
+  }[];
+};
+
+export function toRequestResponseWithFiles(
+  request: Request &
+    RequestWithApprovals &
+    RequestWithRequester &
+    RequestWithAllFiles
+): RequestResponseWithFiles {
+  return {
+    ...toRequestResponse(request),
+    supportingFiles: request.supportingFiles.map(toFileResponse),
   };
 }
 

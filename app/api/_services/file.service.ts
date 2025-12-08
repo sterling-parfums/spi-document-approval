@@ -1,6 +1,6 @@
+import { File as FileEntity } from '@/generated/prisma/client';
 import { prisma } from '../prisma';
 import { signDocument, uploadFile } from './sys-file.service';
-import { File as FileEntity } from '@/generated/prisma/client';
 
 export async function createSignedFile(
   document: FileEntity,
@@ -33,7 +33,7 @@ export async function createSignedFile(
   return signedFile;
 }
 
-type FileResponse = {
+export type FileResponse = {
   id: string;
   createdAt: Date;
   filename: string;

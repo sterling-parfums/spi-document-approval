@@ -8,18 +8,25 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import ActionButton from '../action-button';
 
 type DetailsBottomBarProps = {
   amount: number;
+  handleApprove: () => void;
+  handleReject: () => void;
 };
 
-export default function DetailsBottomBar({ amount }: DetailsBottomBarProps) {
+export default function DetailsBottomBar({
+  amount,
+  handleApprove,
+  handleReject,
+}: DetailsBottomBarProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   return (
     <Paper
       sx={{
-        position: 'fixed',
+        position: 'sticky',
         bottom: 0,
         left: isMobile ? '0px' : '240px',
         right: 0,
@@ -29,7 +36,6 @@ export default function DetailsBottomBar({ amount }: DetailsBottomBarProps) {
         justifyContent: 'space-between',
         alignItems: 'center',
         borderTop: '1px solid #ccc',
-        zIndex: 1000,
       }}
       elevation={3}
     >
@@ -41,22 +47,34 @@ export default function DetailsBottomBar({ amount }: DetailsBottomBarProps) {
       </Box>
 
       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'space-between' }}>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {}}
-          sx={{ mr: 1, width: isMobile ? '100%' : 'default' }}
-        >
-          Approve
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => {}}
-          sx={{ mr: 1, width: isMobile ? '100%' : 'default' }}
-        >
-          Reject
-        </Button>
+        <ActionButton
+          onClick={handleApprove}
+          buttonType="Approve"
+          button={
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {}}
+              sx={{ mr: 1, width: isMobile ? '100%' : 'default' }}
+            >
+              Approve
+            </Button>
+          }
+        />
+        <ActionButton
+          onClick={handleReject}
+          buttonType="Reject"
+          button={
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {}}
+              sx={{ mr: 1, width: isMobile ? '100%' : 'default' }}
+            >
+              Reject
+            </Button>
+          }
+        />
       </Box>
     </Paper>
   );

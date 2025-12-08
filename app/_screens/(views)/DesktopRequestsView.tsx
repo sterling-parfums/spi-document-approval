@@ -3,43 +3,53 @@
 import RequestsTable from '@/app/_components/entry-requests-table';
 import SearchFilters from '@/app/_components/search-filters';
 import { RequestType } from '@/app/_types/request';
-import { RequestResponse } from '@/app/api/_services/request.service';
+import {
+  approveRequest,
+  rejectRequest,
+} from '@/app/api/_client/approval.client';
+import { useRequests } from '@/hooks/RequestsContext';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 type RequestsScreenProps = {
   title: string;
-  data: RequestResponse[];
   baseRoute: string;
-
   requestType: RequestType;
 };
 
+export async function handleApprove(requestId: string) {
+  const res = await approveRequest(requestId);
+  if (!res.success) {
+    alert('Failed to approve request');
+  }
+
+  return res.success;
+}
+
+export async function handleReject(requestId: string) {
+  const res = await rejectRequest(requestId);
+  if (!res.success) {
+    alert('Failed to approve request');
+  }
+
+  return res.success;
+}
+
 export default function DesktopRequestsView({
   title,
-  data,
   baseRoute,
   requestType,
 }: RequestsScreenProps) {
   const router = useRouter();
+  const { data, total, page, setPage, setFilters, pageSize } = useRequests();
 
   const new_request_button = (
     <IconButton
       aria-label="add_request"
-      color="inherit"
+      variant="contained"
       onClick={() => router.push('/dashboard/requests/sent/new')}
-      sx={{
-        backgroundColor: '#1976d2',
-        color: 'white',
-        width: 48,
-        height: 48,
-        borderRadius: '50%',
-        boxShadow: 2,
-        '&:hover': {
-          backgroundColor: '#115293',
-        },
-      }}
+      sx={{ borderRadius: '50%' }}
     >
       <Add />
     </IconButton>
@@ -57,17 +67,23 @@ export default function DesktopRequestsView({
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ mb: 4 }}
+        sx={{ m: 2 }}
       >
         <Typography variant="h2">{title}</Typography>
         {requestType === 'Sent' && new_request_button}
       </Box>
 
-      <SearchFilters onSearch={() => {}} />
+      <SearchFilters onSearch={setFilters} requestType={requestType} />
       <RequestsTable
         data={data}
         baseRoute={baseRoute}
         requestType={requestType}
+        paginationProps={{
+          page,
+          setPage,
+          totalCount: total,
+          rowsPerPage: pageSize,
+        }}
       />
     </Box>
   );

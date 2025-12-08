@@ -1,43 +1,88 @@
 'use client';
+import { currencyCodes } from '@/utils/constants';
 import { ArrowBack } from '@mui/icons-material';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
-import ControlledFileUpload from '../_components/controlled/controlled-file-upload';
+import ControlledFileUpload, {
+  UploadedFileSummary,
+} from '../_components/controlled/controlled-file-upload';
 import { ControlledMultiSelect } from '../_components/controlled/controlled-multi-select';
 import ControlledStyledTextField from '../_components/controlled/controlled-styled-text-field';
+import {
+  ControlledUserSelect,
+  UserData,
+} from '../_components/controlled/controlled-user-select';
+import { submitRequest } from '../api/_client/request.client';
+import { getUsers } from '../api/_client/user.client';
 
 type NewRequestInput = {
   internalRef: string;
   externalRef: string;
+  title: string;
   payee: string;
   amount: number;
   currency: string;
   description: string;
   approvers: string[];
-  approvalDoc: FileList | null;
-  supportingDocs: FileList | null;
+  approvalDoc: UploadedFileSummary[];
+  supportingDocs: UploadedFileSummary[];
 };
-const allApprovers = ['Bob', 'Mustafa', 'Alice', 'Charlie', 'David'];
+
 export default function NewRequestScreen() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { handleSubmit, control } = useForm<NewRequestInput>({
     defaultValues: {
       internalRef: '',
       externalRef: '',
+      title: '',
       payee: '',
       amount: 0,
       currency: '',
       approvers: [] as string[],
       description: '',
-      approvalDoc: null,
-      supportingDocs: null,
+      approvalDoc: [],
+      supportingDocs: [],
     },
   });
 
-  const onSubmit = (data: NewRequestInput) => {
-    console.log('FORM DATA:', data);
+  const fetchUsers = async (): Promise<UserData[]> => {
+    const res = await getUsers({ omitSelf: true });
+
+    if (!res.success) {
+      enqueueSnackbar('Unable to fetch users', { variant: 'error' });
+      return [];
+    }
+
+    return res.data.map((user) => ({ id: user.id, name: user.name }));
+  };
+  const onSubmit = async (data: NewRequestInput) => {
+    const approvalDocID: string = data.approvalDoc[0].id;
+    const supportingDocIDs: string[] = data.supportingDocs.map((doc) => doc.id);
+
+    const res = await submitRequest({
+      title: data.title,
+      description: data.description,
+      payee: data.payee,
+      amount: data.amount,
+      currency: data.currency,
+      internalRef: data.internalRef,
+      externalRef: data.externalRef,
+      approverIds: data.approvers,
+      approvalFileId: approvalDocID,
+      supportingFileIds: supportingDocIDs,
+      approvalFileDate: new Date(),
+    });
+
+    if (!res.success) {
+      enqueueSnackbar(`Unable to submit request`, { variant: 'error' });
+      return;
+    }
+
+    router.push('/dashboard/requests/sent');
   };
 
   return (
@@ -48,6 +93,7 @@ export default function NewRequestScreen() {
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
         sx={{
           maxWidth: 700,
           mx: 'auto',
@@ -78,6 +124,21 @@ export default function NewRequestScreen() {
           />
         </Box>
         <ControlledStyledTextField<NewRequestInput>
+          name="title"
+          control={control}
+          label="Title*"
+          rules={{ required: 'Title is required' }}
+          placeholder="Enter title"
+        />
+        <ControlledStyledTextField<NewRequestInput>
+          name="description"
+          control={control}
+          label="Description"
+          placeholder="Enter description"
+          multiline
+          rows={6}
+        />
+        <ControlledStyledTextField<NewRequestInput>
           name="payee"
           control={control}
           label="Payee*"
@@ -104,29 +165,23 @@ export default function NewRequestScreen() {
             placeholder="Enter amount"
           />
 
-          <ControlledStyledTextField<NewRequestInput>
+          <ControlledMultiSelect<NewRequestInput>
             name="currency"
             control={control}
             label="Currency*"
             rules={{ required: 'Currency is required' }}
             placeholder="Enter Currency"
+            options={currencyCodes}
           />
         </Box>
-        <ControlledMultiSelect
+        <ControlledUserSelect
           name="approvers"
           label="Approvers*"
           control={control}
-          options={allApprovers}
+          fetchUsers={fetchUsers}
           rules={{ required: 'Atleast 1 Approver is required' }}
         />
-        <ControlledStyledTextField<NewRequestInput>
-          name="description"
-          control={control}
-          label="Description"
-          placeholder="Enter description"
-          multiline
-          rows={6}
-        />
+
         <Box
           sx={{
             display: 'flex',

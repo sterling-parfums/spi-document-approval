@@ -1,10 +1,9 @@
 'use client';
 
+import { RequestsProvider } from '@/hooks/RequestsContext';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { RequestType } from '../_types/request';
-import { getRequests } from '../api/_client/request.client';
-import { RequestResponse } from '../api/_services/request.service';
+import { getApprovalsForRequest } from '../api/_client/approval.client';
 import DesktopRequestsView from './(views)/DesktopRequestsView';
 import MobileRequestsView from './(views)/MobileRequestsView';
 
@@ -14,6 +13,19 @@ type RequestsScreenProps = {
   requestType: RequestType;
 };
 
+export async function canApprove(requestId: string) {
+  const res = await getApprovalsForRequest(requestId);
+
+  if (!res.success) {
+    console.log(`Unable to find approval for request ${requestId}.`);
+    return false;
+  }
+
+  return res.canApprove;
+}
+
+export const rowsPerPage = 5;
+
 export default function RequestsScreen({
   title,
   baseRoute,
@@ -22,30 +34,19 @@ export default function RequestsScreen({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [data, setData] = useState<RequestResponse[]>([]);
-
-  useEffect(() => {
-    getRequests(requestType).then((res) => {
-      if (res.success) {
-        setData(res.data);
-      } else {
-        console.error('Failed to fetch requests', res.status);
-      }
-    });
-  }, []);
-
   return (
-    <Box>
-      {isMobile ? (
-        <MobileRequestsView data={data} baseRoute={baseRoute} />
-      ) : (
-        <DesktopRequestsView
-          title={title}
-          data={data}
-          baseRoute={baseRoute}
-          requestType={requestType}
-        />
-      )}
-    </Box>
+    <RequestsProvider requestType={requestType}>
+      <Box>
+        {isMobile ? (
+          <MobileRequestsView baseRoute={baseRoute} requestType={requestType} />
+        ) : (
+          <DesktopRequestsView
+            title={title}
+            baseRoute={baseRoute}
+            requestType={requestType}
+          />
+        )}
+      </Box>
+    </RequestsProvider>
   );
 }

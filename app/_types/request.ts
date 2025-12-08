@@ -1,6 +1,5 @@
 export type RequestFilters = {
   payee?: string;
-  name?: string;
   idNumber?: number;
   status?: string;
   amountFrom?: number;
@@ -8,6 +7,9 @@ export type RequestFilters = {
   fromDate?: string;
   toDate?: string;
   internalRef?: string;
+  externalRef?: string;
+  sortBy?: string;
+  sortOrder?: string;
 };
 
 export type RequestType = 'Sent' | 'Received';

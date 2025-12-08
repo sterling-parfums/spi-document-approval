@@ -1,36 +1,45 @@
 'use client';
 
-import ApprovalEntry from '@/app/_components/entry-requests-card';
-import SearchBar from '@/app/_components/search-bar';
-import { RequestResponse } from '@/app/api/_services/request.service';
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
+import { RequestEntry } from '@/app/_components/entry-requests-card';
+import SearchFilters from '@/app/_components/search-filters';
+import { RequestType } from '@/app/_types/request';
+import { openPreview } from '@/app/api/_client/file.client';
+import { ApprovalDecision } from '@/generated/prisma/enums';
+import { useRequests } from '@/hooks/RequestsContext';
+import { Add } from '@mui/icons-material';
+import { Box, IconButton, Pagination, Paper, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 type RequestsScreenProps = {
-  data: RequestResponse[];
   baseRoute: string;
+  requestType: RequestType;
 };
 
 export default function MobileRequestsView({
-  data,
   baseRoute,
+  requestType,
 }: RequestsScreenProps) {
   const router = useRouter();
+  const { data, total, page, setPage, setFilters, pageSize } = useRequests();
 
-  const [status, setStatus] = useState('');
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setStatus(event.target.value);
+  const canApprove = (status: ApprovalDecision | null) => {
+    if (!status) return false;
+    return requestType === 'Received' && status === 'PENDING';
   };
-
+  const new_request_button = (
+    <IconButton
+      aria-label="add_request"
+      variant="contained"
+      size="large"
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push('/dashboard/requests/sent/new');
+      }}
+      sx={{ borderRadius: '50%' }}
+    >
+      <Add />
+    </IconButton>
+  );
   return (
     <Box
       sx={{
@@ -39,31 +48,28 @@ export default function MobileRequestsView({
         flexDirection: 'column',
       }}
     >
-      <FormControl sx={{ mb: 1 }}>
-        <InputLabel id="statusLabel">Status</InputLabel>
-        <Select
-          labelId="statusLabel"
-          id="statusSelect"
-          value={status}
-          label="Status"
-          onChange={handleChange}
-        >
-          <MenuItem value={'ALL'}>All</MenuItem>
-          <MenuItem value={'PENDING'}>Pending</MenuItem>
-          <MenuItem value={'APPROVED'}>Approved</MenuItem>
-          <MenuItem value={'REJECTED'}>Rejected</MenuItem>
-        </Select>
-      </FormControl>
-      <SearchBar onSearch={() => {}} />
+      <SearchFilters onSearch={setFilters} requestType={requestType} />
       {data.map((item) => (
-        <ApprovalEntry
+        <RequestEntry
           key={item.id}
           data={item}
           sx={{ mb: 2 }}
           onClick={() => router.push(`${baseRoute}/${item.id}`)}
-          viewOnly
+          viewOnly={!canApprove(item.status)}
+          openPreview={openPreview}
         />
       ))}
+      <Stack spacing={2} alignItems="center" mt={2}>
+        <Pagination
+          count={Math.ceil(total / pageSize)}
+          page={page + 1}
+          onChange={(_, value) => setPage(value - 1)}
+          color="primary"
+        />
+      </Stack>
+      <Paper sx={{ position: 'fixed', bottom: 20 }}>
+        {requestType === 'Sent' && new_request_button}
+      </Paper>
     </Box>
   );
 }
