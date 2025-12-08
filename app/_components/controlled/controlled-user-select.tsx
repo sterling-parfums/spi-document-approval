@@ -53,11 +53,14 @@ export function ControlledUserSelect<T extends FieldValues>({
           //  options.filter((o) => value?.includes(o.id))
           options.find((o) => o.id === value) || null
         }
-        onChange={(_, newValues) =>
-          onChange(
-            // newValues.map((v) => v.id)
-            (newValues as UserData).id
-          )
+        onChange={
+          (_, newValues) => {
+            if (!newValues) return onChange([]);
+            onChange([newValues.id]);
+          }
+          // onChange(
+          // newValues.map((v) => v.id)
+          // )
         }
         onOpen={handleOpen}
         loading={loading}
