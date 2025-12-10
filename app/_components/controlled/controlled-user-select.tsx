@@ -51,7 +51,7 @@ export function ControlledUserSelect<T extends FieldValues>({
         getOptionLabel={(o) => o.name}
         value={
           //  options.filter((o) => value?.includes(o.id))
-          options.find((o) => o.id === value) || null
+          options.find((o) => o.id === value?.[0]) || null
         }
         onChange={
           (_, newValues) => {
