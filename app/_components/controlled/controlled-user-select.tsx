@@ -51,13 +51,16 @@ export function ControlledUserSelect<T extends FieldValues>({
         getOptionLabel={(o) => o.name}
         value={
           //  options.filter((o) => value?.includes(o.id))
-          options.find((o) => o.id === value) || null
+          options.find((o) => o.id === value?.[0]) || null
         }
-        onChange={(_, newValues) =>
-          onChange(
-            // newValues.map((v) => v.id)
-            (newValues as UserData).id
-          )
+        onChange={
+          (_, newValues) => {
+            if (!newValues) return onChange([]);
+            onChange([newValues.id]);
+          }
+          // onChange(
+          // newValues.map((v) => v.id)
+          // )
         }
         onOpen={handleOpen}
         loading={loading}
