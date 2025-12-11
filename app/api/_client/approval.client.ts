@@ -1,6 +1,8 @@
+import { enqueueSnackbar } from 'notistack';
 import { ApprovalResponse } from '../_services/approval.service';
 import { UserMinimalResponse } from '../_services/user.service';
 import { apiFetch } from './apiFetch';
+import { getSignedFile } from './file.client';
 
 export async function approveRequest(requestId: string) {
   const res = await apiFetch(`/api/requests/${requestId}/approve`, {
@@ -12,6 +14,12 @@ export async function approveRequest(requestId: string) {
   }
 
   const approval = await res.json();
+
+  const signed = await getSignedFile(requestId);
+
+  if (!signed.success) {
+    enqueueSnackbar('Unable to generate signed file', { variant: 'warning' });
+  }
 
   return { success: true, status: res.status, data: approval };
 }
@@ -27,7 +35,7 @@ export async function rejectRequest(requestId: string) {
 
   const rejection = await res.json();
 
-  return { success: true, status: res.status, data: rejection };
+  return { success: true, data: rejection };
 }
 
 type ApprovalResult =
