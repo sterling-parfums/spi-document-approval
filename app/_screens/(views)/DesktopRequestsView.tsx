@@ -3,10 +3,6 @@
 import RequestsTable from '@/app/_components/entry-requests-table';
 import SearchFilters from '@/app/_components/search-filters';
 import { RequestType } from '@/app/_types/request';
-import {
-  approveRequest,
-  rejectRequest,
-} from '@/app/api/_client/approval.client';
 import { useRequests } from '@/hooks/RequestsContext';
 import { Add } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -17,24 +13,6 @@ type RequestsScreenProps = {
   baseRoute: string;
   requestType: RequestType;
 };
-
-export async function handleApprove(requestId: string) {
-  const res = await approveRequest(requestId);
-  if (!res.success) {
-    alert('Failed to approve request');
-  }
-
-  return res.success;
-}
-
-export async function handleReject(requestId: string) {
-  const res = await rejectRequest(requestId);
-  if (!res.success) {
-    alert('Failed to approve request');
-  }
-
-  return res.success;
-}
 
 export default function DesktopRequestsView({
   title,

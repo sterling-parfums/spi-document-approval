@@ -1,11 +1,16 @@
 'use client';
 
 import {
-  getPreviewFileLink,
-  openApprovalFilePreview,
+  downloadFile,
+  openPreview,
+  openSignedApprovalFile,
 } from '@/app/api/_client/file.client';
 import { RequestResponseWithFiles } from '@/app/api/_services/request.service';
+import { FileDownloadOutlined } from '@mui/icons-material';
 import {
+  Box,
+  Button,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -13,7 +18,6 @@ import {
   TableContainer,
   TableRow,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
 
 type ApprovalTableProps = {
   data: RequestResponseWithFiles & { approvers: string[] };
@@ -28,7 +32,7 @@ function ApprovalTableRow({ header, data }: ApprovalTableRowProps) {
   return (
     <TableRow>
       <TableCell
-        sx={{ fontWeight: 'bold', width: { sm: '100px', md: '200px' } }}
+        sx={{ fontWeight: 'bold', width: { xs: '100px', md: '200px' } }}
       >
         {header}
       </TableCell>
@@ -37,27 +41,7 @@ function ApprovalTableRow({ header, data }: ApprovalTableRowProps) {
   );
 }
 
-type FileData = Record<string, string>;
-
 export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
-  const [supportingURLs, setSupportingURLs] = useState<FileData>({});
-  useEffect(() => {
-    async function loadSupportingFiles() {
-      const urls: FileData = {};
-      if (!data.supportingFiles) return;
-
-      await Promise.all(
-        data.supportingFiles.map(async (f) => {
-          const url = await getPreviewFileLink(f.id);
-          if (url) urls[f.id] = url;
-        })
-      );
-
-      setSupportingURLs(urls);
-    }
-
-    loadSupportingFiles();
-  }, []);
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 2, mb: 3 }}>
       <Table key={data.id}>
@@ -100,9 +84,45 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
           <ApprovalTableRow
             header="Approval Document"
             data={
-              <a href="#" onClick={() => openApprovalFilePreview(data.id)}>
-                {data.approvalFile?.filename ?? '-'}
-              </a>
+              <Box sx={{ display: 'flex' }}>
+                <Button
+                  onClick={() => openPreview(data.approvalFile?.id ?? '')}
+                  variant="hyperlink"
+                >
+                  {data.approvalFile?.filename ?? '-'}
+                </Button>
+
+                <IconButton
+                  onClick={() => downloadFile(data.approvalFile?.id ?? '')}
+                  sx={{ ml: 2 }}
+                  size="medium"
+                >
+                  <FileDownloadOutlined />
+                </IconButton>
+              </Box>
+            }
+          />
+          <ApprovalTableRow
+            header="Signed Approval Document"
+            data={
+              <Box sx={{ display: 'flex' }}>
+                <Button
+                  disabled={data.status !== 'APPROVED'}
+                  onClick={() => openSignedApprovalFile(data.id)}
+                  variant="hyperlink"
+                >
+                  {data.status !== 'APPROVED' ? '-' : 'Signed Document'}
+                </Button>
+                <IconButton
+                  onClick={() =>
+                    openSignedApprovalFile(data.id, { download: true })
+                  }
+                  sx={{ ml: 2 }}
+                  size="medium"
+                >
+                  <FileDownloadOutlined />
+                </IconButton>
+              </Box>
             }
           />
 
@@ -112,13 +132,22 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
               data.supportingFiles?.length
                 ? data.supportingFiles?.map((file) => {
                     return (
-                      <a
-                        key={file.id}
-                        href={supportingURLs[file.id]}
-                        target="_blank"
-                      >
-                        {file.filename}
-                      </a>
+                      <Box sx={{ display: 'flex' }} key={file.id}>
+                        <Button
+                          onClick={() => openPreview(file.id)}
+                          variant="hyperlink"
+                        >
+                          {file.filename}
+                        </Button>
+
+                        <IconButton
+                          onClick={() => downloadFile(file.id)}
+                          sx={{ ml: 2 }}
+                          size="medium"
+                        >
+                          <FileDownloadOutlined />
+                        </IconButton>
+                      </Box>
                     );
                   })
                 : '-'

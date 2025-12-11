@@ -1,6 +1,8 @@
+import { redirect } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 import { FileResponse } from '../_services/file.service';
 import { apiFetch } from './apiFetch';
-import { getRequestByID } from './request.client';
+import { getMe } from './user.client';
 
 export type UploadedFile = {
   id: string;
@@ -66,7 +68,7 @@ type SignedFileRequestResult =
 export async function getSignedFile(
   requestId: string
 ): Promise<SignedFileRequestResult> {
-  const res = await apiFetch(`/api/rquests/${requestId}/signed`);
+  const res = await apiFetch(`/api/requests/${requestId}/signed`);
 
   if (!res.ok) {
     return { success: false, status: res.status };
@@ -103,52 +105,33 @@ export async function downloadFile(fileId: string) {
   URL.revokeObjectURL(downloadUrl);
 }
 
-export async function getPreviewFileLink(fileId: string) {
-  if (!fileId) return;
+export async function openPreview(fileId: string) {
+  const me = await getMe();
 
-  const res = await getFile(fileId, { download: false });
-
-  if (!res.success) {
-    console.error(`Failed to fetch file ${fileId} (status ${res.status})`);
-    return null;
+  if (!me.success) {
+    redirect('/login');
   }
 
-  const blob = res.data;
-  const url = URL.createObjectURL(blob);
-
-  return url;
+  window.open(`/api/files/${fileId}/preview`);
 }
 
-export async function openPreview(fileId: string) {
-  const url = await getPreviewFileLink(fileId);
-
-  if (!url) return;
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_self';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  setTimeout(() => URL.revokeObjectURL(url), 7000);
-}
-
-export async function openApprovalFilePreview(requestId: string) {
+export async function openSignedApprovalFile(
+  requestId: string,
+  props?: { download: boolean }
+) {
   const signed = await getSignedFile(requestId);
 
-  if (signed.success) {
-    await openPreview(signed.data.id);
+  if (!signed.success) {
+    enqueueSnackbar(`Unable to fetch signed file ${signed.status}`, {
+      variant: 'error',
+    });
     return;
   }
 
-  const req = await getRequestByID(requestId);
-
-  if (!req.success) {
-    console.error(`Unable to fetch request ${requestId}`);
+  if (props?.download) {
+    await downloadFile(signed.data.id);
     return;
   }
 
-  await openPreview(req.data.approvalFile.id);
-  return;
+  await openPreview(signed.data.id);
 }

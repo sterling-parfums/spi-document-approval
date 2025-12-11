@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { RequestType } from '../_types/request';
-import { openApprovalFilePreview } from '../api/_client/file.client';
+import { openPreview } from '../api/_client/file.client';
 import { RequestResponse } from '../api/_services/request.service';
 import ActionButton from './action-button';
 
@@ -153,7 +153,7 @@ export default function RequestsTable({
                 <Box display="flex" gap={1}>
                   <ActionButton
                     buttonType="Preview"
-                    onClick={() => openApprovalFilePreview(req.id)}
+                    onClick={() => openPreview(req.approvalFile?.id ?? '')}
                   />
                 </Box>
               </TableCell>
