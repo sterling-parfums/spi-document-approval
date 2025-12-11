@@ -14,6 +14,7 @@ import {
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import AppTheme from '../../shared-theme/AppTheme';
 import ControlledStyledTextField from '../_components/controlled/controlled-styled-text-field';
@@ -85,6 +86,9 @@ export default function SignUpScreen(props: { disableCustomTheme?: boolean }) {
       return;
     }
 
+    enqueueSnackbar('Sign up successful. Contact admin for activation.', {
+      variant: 'info',
+    });
     router.push('/login');
   };
 

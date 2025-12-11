@@ -42,6 +42,7 @@ function ApprovalTableRow({ header, data }: ApprovalTableRowProps) {
 }
 
 export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
+  const isApproved = data.status === 'APPROVED';
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 2, mb: 3 }}>
       <Table key={data.id}>
@@ -107,21 +108,23 @@ export default function ApprovalDetailsTable({ data }: ApprovalTableProps) {
             data={
               <Box sx={{ display: 'flex' }}>
                 <Button
-                  disabled={data.status !== 'APPROVED'}
+                  disabled={!isApproved}
                   onClick={() => openSignedApprovalFile(data.id)}
                   variant="hyperlink"
                 >
-                  {data.status !== 'APPROVED' ? '-' : 'Signed Document'}
+                  {isApproved ? 'Signed Document' : ''}
                 </Button>
-                <IconButton
-                  onClick={() =>
-                    openSignedApprovalFile(data.id, { download: true })
-                  }
-                  sx={{ ml: 2 }}
-                  size="medium"
-                >
-                  <FileDownloadOutlined />
-                </IconButton>
+                {isApproved && (
+                  <IconButton
+                    onClick={() =>
+                      openSignedApprovalFile(data.id, { download: true })
+                    }
+                    sx={{ ml: 2 }}
+                    size="medium"
+                  >
+                    <FileDownloadOutlined />
+                  </IconButton>
+                )}
               </Box>
             }
           />

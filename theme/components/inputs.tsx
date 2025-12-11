@@ -136,6 +136,22 @@ export const inputsCustomizations: Components<Theme> = {
           },
           {
             props: {
+              variant: 'hyperlink',
+            },
+            style: {
+              padding: 0,
+              minWidth: 0,
+              textTransform: 'none',
+              fontSize: 'inherit',
+              color: 'primary.main',
+              '&:hover': {
+                textDecoration: 'underline',
+                backgroundColor: 'transparent',
+              },
+            },
+          },
+          {
+            props: {
               color: 'secondary',
               variant: 'text',
             },

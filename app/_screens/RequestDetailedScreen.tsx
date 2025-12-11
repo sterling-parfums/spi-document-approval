@@ -188,6 +188,7 @@ export default function RequestDetailScreen({
       {canApprove && (
         <DetailsBottomBar
           amount={data.amount}
+          currency={data.currency}
           handleApprove={() => {
             handleApprove(data.id);
           }}

@@ -5,6 +5,11 @@ declare module '@mui/material/IconButton' {
     variant?: 'icon' | 'contained';
   }
 }
+declare module '@mui/material/Button' {
+  interface ButtonPropsVariantOverrides {
+    hyperlink: true;
+  }
+}
 
 const defaultTheme = createTheme();
 

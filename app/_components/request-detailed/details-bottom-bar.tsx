@@ -12,12 +12,14 @@ import ActionButton from '../action-button';
 
 type DetailsBottomBarProps = {
   amount: number;
+  currency: string;
   handleApprove: () => void;
   handleReject: () => void;
 };
 
 export default function DetailsBottomBar({
   amount,
+  currency,
   handleApprove,
   handleReject,
 }: DetailsBottomBarProps) {
@@ -26,12 +28,12 @@ export default function DetailsBottomBar({
   return (
     <Paper
       sx={{
-        position: 'sticky',
+        position: { xs: 'sticky', md: 'fixed' },
         bottom: 0,
-        left: isMobile ? '0px' : '240px',
+        left: { xs: '0px', md: '240px' },
         right: 0,
         p: 2,
-        display: isMobile ? 'normal' : 'flex',
+        display: { xs: 'normal', md: 'flex' },
         flexDirection: isMobile ? 'column' : 'normal',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -43,7 +45,9 @@ export default function DetailsBottomBar({
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mr: 1 }}>
           Amount:
         </Typography>
-        <Typography variant="subtitle1">{amount.toFixed(2)}</Typography>
+        <Typography variant="subtitle1">{`${amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+        })} ${currency}`}</Typography>
       </Box>
 
       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'space-between' }}>

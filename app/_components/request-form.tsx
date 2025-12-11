@@ -43,7 +43,7 @@ export default function RequestForm({
     defaultValues: {
       internalRef: '',
       externalRef: '',
-      title: 'lol',
+      title: '',
       payee: '',
       amount: undefined,
       currency: undefined,
