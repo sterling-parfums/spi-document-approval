@@ -2,9 +2,10 @@
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button, IconButton, Tab, Tabs, Typography } from '@mui/material';
-import { redirect, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import LoadingBox from '../_components/loading-box';
 import DetailsBottomBar from '../_components/request-detailed/details-bottom-bar';
 import ApprovalDetailsTable from '../_components/request-detailed/entry-request-details-table';
 import {
@@ -56,6 +57,7 @@ export default function RequestDetailScreen({
   const router = useRouter();
 
   const [tabVal, setTabVal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<
     RequestResponseWithFiles & { approvers: string[] }
   >({
@@ -108,6 +110,7 @@ export default function RequestDetailScreen({
 
   useEffect(() => {
     async function fetchRequestDetails() {
+      setLoading(true);
       const request = await getRequestByID(requestId);
 
       if (!request.success) {
@@ -136,10 +139,16 @@ export default function RequestDetailScreen({
       }
 
       setCanEdit(canEditRes.canEdit ?? false);
+
+      setLoading(false);
     }
 
     fetchRequestDetails();
   }, [requestId]);
+
+  if (loading) {
+    return <LoadingBox />;
+  }
 
   return (
     <Box>
@@ -176,7 +185,7 @@ export default function RequestDetailScreen({
         {canEdit && (
           <Button
             variant="contained"
-            onClick={() => redirect(`${pathname}/update`)}
+            onClick={() => router.push(`${pathname}/update`)}
           >
             Edit
           </Button>

@@ -14,10 +14,13 @@ import {
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AppTheme from '../../shared-theme/AppTheme';
 import ControlledStyledTextField from '../_components/controlled/controlled-styled-text-field';
+import LoadingBox from '../_components/loading-box';
 import { logIn } from '../api/_client/auth.client';
+import { getMe } from '../api/_client/user.client';
 
 type LogInProps = {
   email: string;
@@ -68,6 +71,7 @@ const LogInContainer = styled(Stack)(({ theme }) => ({
 
 export default function LogInScreen(props: { disableCustomTheme?: boolean }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const { handleSubmit, control, setError, setValue } = useForm<LogInProps>({
     defaultValues: {
@@ -92,6 +96,24 @@ export default function LogInScreen(props: { disableCustomTheme?: boolean }) {
 
     router.push('/dashboard');
   };
+
+  useEffect(() => {
+    async function checkForLoggedInUser() {
+      setLoading(true);
+      try {
+        const user = await getMe();
+        if (user.success) {
+          router.replace('/dashboard');
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    checkForLoggedInUser();
+  }, []);
+
+  if (loading) return <LoadingBox />;
 
   return (
     <AppTheme {...props}>
