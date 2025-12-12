@@ -74,11 +74,11 @@ export async function getSignedFile(
     return { success: false, status: res.status };
   }
 
-  const fileData = (await res.json()) as { file: FileResponse };
+  const fileData = await res.json();
 
   return {
     success: true,
-    data: fileData.file,
+    data: fileData,
   };
 }
 
