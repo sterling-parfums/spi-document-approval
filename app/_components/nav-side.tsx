@@ -17,7 +17,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type NavItem = {
@@ -32,14 +32,17 @@ type SideNavProps = {
   username: string;
   onLogout: () => void;
   onNavigate?: (url: string) => void;
+  profileRoute: string;
 };
 export default function SideNav({
   items,
   username,
   onLogout,
   onNavigate,
+  profileRoute,
 }: SideNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const [open, setOpen] = useState<Record<string, boolean>>({});
 
@@ -67,7 +70,7 @@ export default function SideNav({
                   if (hasChildren) {
                     toggleDropdown(item.text);
                   } else {
-                    onNavigate?.(item.ref); // 👈 call navigation instead of direct linking
+                    onNavigate?.(item.ref);
                   }
                 }}
                 style={{
@@ -124,7 +127,7 @@ export default function SideNav({
         }}
       >
         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-          <IconButton>
+          <IconButton onClick={() => router.push(profileRoute)}>
             <AccountCircle />
           </IconButton>
           {username}

@@ -1,10 +1,10 @@
-import { toMeUserResponse } from '../../_services/user.service';
+import z from 'zod';
 import {
   comparePassword,
   findLoggedInUser,
   hashPassword,
 } from '../../_services/auth.service';
-import z from 'zod';
+import { toMeUserResponse } from '../../_services/user.service';
 import { prisma } from '../../prisma';
 
 export async function GET(): Promise<Response> {
@@ -55,7 +55,10 @@ export async function POST(req: Request): Promise<Response> {
     const match = await comparePassword(oldPassword, user.hashedPassword);
 
     if (!match) {
-      return new Response(null, { status: 400 });
+      return Response.json(
+        { error: 'Current password is incorrect' },
+        { status: 400 }
+      );
     }
 
     await prisma.user.update({

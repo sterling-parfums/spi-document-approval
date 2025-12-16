@@ -18,6 +18,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import SideNav from '../_components/nav-side';
 import { logOut } from '../api/_client/auth.client';
@@ -29,14 +30,15 @@ const titles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/dashboard/requests/received': 'Received Requests',
   '/dashboard/requests/sent': 'Sent Requests',
+  '/dashboard/profile': 'Profile',
 };
 
 async function getUserName() {
   const res = await getMe();
 
   if (!res.success) {
-    alert(res.status);
-    return;
+    enqueueSnackbar('Unable to fetch user', { variant: 'warning' });
+    return 'User';
   }
 
   return res.data.name;
@@ -47,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [username, setUsername] = useState<string | undefined>('');
+  const [username, setUsername] = useState<string | undefined>('User');
 
   useEffect(() => {
     async function fetchData() {
@@ -99,6 +101,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       username={username ?? ''}
       onLogout={onLogout}
       onNavigate={handleNavigate}
+      profileRoute="/dashboard/profile"
     />
   );
 

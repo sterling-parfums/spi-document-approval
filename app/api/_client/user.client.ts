@@ -55,3 +55,30 @@ export async function getMe(): Promise<UserRequestResult<MeUserResponse>> {
 
   return { success: true, data };
 }
+
+export type ProfileDetails = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+type UpdateProfileResult =
+  | { success: true }
+  | { success: false; status: number; error: string };
+
+export async function updateMe(
+  data: ProfileDetails
+): Promise<UpdateProfileResult> {
+  const res = await fetch('/api/users/me', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    return {
+      success: false,
+      status: res.status,
+      error: data.error || 'Something went wrong',
+    };
+  }
+  return { success: true };
+}
