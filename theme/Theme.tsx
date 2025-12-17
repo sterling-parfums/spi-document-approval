@@ -2,6 +2,7 @@ import { createTheme, ThemeOptions, ThemeProvider } from '@mui/material';
 import { useMemo } from 'react';
 import { dataDisplayCustomizations } from './components/dataDisplay';
 import { inputsCustomizations } from './components/inputs';
+import { navigationCustomizations } from './components/navigation';
 import { typography } from './themeConstants';
 
 interface ThemeProps {
@@ -22,6 +23,7 @@ export default function Theme(props: ThemeProps) {
         ...themeComponents,
         ...inputsCustomizations,
         ...dataDisplayCustomizations,
+        ...navigationCustomizations,
       },
     });
   }, [themeComponents]);

@@ -1,6 +1,5 @@
 'use client';
 
-import Theme from '@/theme/Theme';
 import {
   Description as DescriptionIcon,
   Home as HomeIcon,
@@ -106,53 +105,51 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <Theme>
-      <Box sx={{ display: 'flex' }}>
-        {isMobile && (
-          <AppBar position="fixed" color="inherit" elevation={0}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                edge="start"
-                onClick={toggleMobileDrawer}
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6">{pageTitle}</Typography>
-            </Toolbar>
-          </AppBar>
-        )}
-        <Box
-          component="nav"
-          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-          aria-label="sidebar navigation"
-        >
-          <Drawer
-            variant={isMobile ? 'temporary' : 'permanent'}
-            open={isMobile ? mobileOpen : true}
-            onClose={toggleMobileDrawer}
-            ModalProps={{ keepMounted: true }}
-            sx={{
-              display: { xs: 'block', md: 'block' },
-              '& .MuiDrawer-paper': { width: drawerWidth, overflowX: 'hidden' },
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Box>
-
-        <Box
-          component="main"
+    <Box sx={{ display: 'flex' }}>
+      {isMobile && (
+        <AppBar position="fixed" color="inherit" elevation={0}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={toggleMobileDrawer}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6">{pageTitle}</Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        aria-label="sidebar navigation"
+      >
+        <Drawer
+          variant={isMobile ? 'temporary' : 'permanent'}
+          open={isMobile ? mobileOpen : true}
+          onClose={toggleMobileDrawer}
+          ModalProps={{ keepMounted: true }}
           sx={{
-            flexGrow: 1,
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            mt: isMobile ? 8 : 0,
+            display: { xs: 'block', md: 'block' },
+            '& .MuiDrawer-paper': { width: drawerWidth, overflowX: 'hidden' },
           }}
         >
-          {children}
-        </Box>
+          {drawer}
+        </Drawer>
       </Box>
-    </Theme>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          mt: isMobile ? 8 : 0,
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
   );
 }

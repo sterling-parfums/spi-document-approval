@@ -15,8 +15,8 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
+import { Fragment } from 'react';
 import { useForm } from 'react-hook-form';
-import AppTheme from '../../shared-theme/AppTheme';
 import ControlledStyledTextField from '../_components/controlled/controlled-styled-text-field';
 import { signUp } from '../api/_client/auth.client';
 
@@ -93,8 +93,8 @@ export default function SignUpScreen(props: { disableCustomTheme?: boolean }) {
   };
 
   return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
+    <Fragment>
+      <CssBaseline />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -174,6 +174,6 @@ export default function SignUpScreen(props: { disableCustomTheme?: boolean }) {
           </Box>
         </Card>
       </SignUpContainer>
-    </AppTheme>
+    </Fragment>
   );
 }
