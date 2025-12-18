@@ -304,6 +304,7 @@ export const inputsCustomizations: Components<Theme> = {
           opacity: 0.7,
           color: gray[500],
         },
+        fontSize: '16px',
       },
     },
   },
@@ -315,14 +316,6 @@ export const inputsCustomizations: Components<Theme> = {
         borderRadius: (theme.vars || theme).shape.borderRadius,
         backgroundColor: (theme.vars || theme).palette.background.default,
         transition: 'border 120ms ease-in',
-
-        '&:hover .MuiOutlinedInput-notchedOutline': {
-          borderColor: gray[600],
-        },
-
-        [`&.Mui-focused .MuiOutlinedInput-notchedOutline`]: {
-          borderColor: brand[400],
-        },
 
         variants: [
           {
@@ -348,10 +341,6 @@ export const inputsCustomizations: Components<Theme> = {
           opacity: 0.7,
           color: gray[500],
         },
-      }),
-
-      notchedOutline: ({ theme }) => ({
-        borderColor: (theme.vars || theme).palette.divider,
       }),
     },
   },
