@@ -129,6 +129,7 @@ export default function SearchFilters({
               <InputLabel>Payee</InputLabel>
               <OutlinedInput
                 value={filters.payee}
+                label="Payee"
                 onChange={(e) => handleChange('payee', e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
